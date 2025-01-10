@@ -20,7 +20,7 @@ io.on('connection', (socket) => { // When a user connects
     let currentRoom = "default";
     let name = "user" + x;
     x++;
-    users.push(name);
+    users.push([name, socket.id]);
 
     socket.join(currentRoom); // Join default room
     console.log(`${name} connected`);
@@ -45,20 +45,28 @@ io.on('connection', (socket) => { // When a user connects
                     break;
                 // Change name
                 case "/nick":
-                    users[users.indexOf(name)] = msg.split(" ")[1];
-                    name = msg.split(" ")[1];
-                    socket.emit('chat message', "Your name has been changed to " + name);
+                    const newName = msg.split(" ")[1];
+                    if (!newName) {
+                        socket.emit('chat message', "Please provide a new nickname.");
+                        break;
+                    }
+                    let userIndex = users.findIndex(user => user[1] === socket.id);
+                    let oldName = users[userIndex][0];
+                    users[userIndex][0] = newName;
+                    name = newName;
+                    socket.emit('chat message', `Your name has been changed to ${newName}.`);
+                    io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
                     break;
                 //create
                 case "/create":
-                    const room = msg.split(" ")[1];
+                    let room = msg.split(" ")[1];
                     rooms.push(room);
                     socket.join(room);
                     io.emit('chat message', "New room : " + room + " has been created by " + name);
                     break;
                 //join
                 case "/join":
-                    const roomToJoin = msg.split(" ")[1];
+                    let roomToJoin = msg.split(" ")[1];
                     if (!rooms.includes(roomToJoin)) {
                         socket.emit('chat message', name + ": Room not found");
                         break;
@@ -75,22 +83,44 @@ io.on('connection', (socket) => { // When a user connects
                     break;
                 //delete room
                 case "/delete":
-                    const roomToDelete = msg.split(" ")[1];
+                    let roomToDelete = msg.split(" ")[1];
                     if (!rooms.includes(roomToDelete)) {
                         socket.emit('chat message', name + ": Room not found");
                         break;
                     } else {
                         rooms = rooms.filter(item => item !== roomToDelete);
                         io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
-                        const socketsInRoom = await io.in(roomToDelete).fetchSockets();
+                        let socketsInRoom = await io.in(roomToDelete).fetchSockets();
                         socketsInRoom.forEach((socket) => {
                             socket.leave(roomToDelete);
                             socket.join("default");
                             currentRoom = "default";
                         });
-                        io.to("default").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the default room.`);
+                        io.to("default").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the default room.');
                         break;
                     }
+                //Private msg
+                case "/msg":
+                    let userToMsg = msg.split(" ")[1];
+                    let msgToUser = msg.split(" ").slice(2).join(" ");
+
+                    if (!userToMsg || !msgToUser) {
+                        socket.emit('chat message', "Usage: /msg <username> <message>");
+                        break;
+                    }
+
+                    //If no users
+                    if ((users.findIndex(user => user[0] === userToMsg)) === -1){
+                        socket.emit('chat message', `User "${userToMsg}" not found.`);
+                        break;
+                    }
+
+                    let targetSocketId = users[(users.findIndex(user => user[0] === userToMsg))][1];
+
+                    io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
+                    socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
+                    break;
+
                 default:
                     socket.emit('chat message', name + ": Command not found");
                     break;
