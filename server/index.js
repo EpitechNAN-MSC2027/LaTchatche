@@ -41,7 +41,7 @@ io.on('connection', (socket) => { // When a user connects
             switch (command) {
                 //List all users
                 case "/users":
-                    socket.emit('chat message', "list of users : " + users);
+                    socket.emit('chat message', "list of users : " + users.map(user => user[0]));
                     break;
                 // Change name
                 case "/nick":
