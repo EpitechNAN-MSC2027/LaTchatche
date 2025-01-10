@@ -131,7 +131,6 @@ io.on('connection', (socket) => { // When a user connects
                     socket.emit('chat message', name + ": Command not found");
                     break;
             }
-            //test
         } else {
             io.to(currentRoom).emit('chat message', name + ": " + msg);
         }
