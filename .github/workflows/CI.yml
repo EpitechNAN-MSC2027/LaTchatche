@@ -2,7 +2,7 @@ name: Mirror Repository
 
 on:
   push:
-    branch:
+    branches:
         - main
 
 
