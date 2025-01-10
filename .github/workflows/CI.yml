@@ -9,7 +9,7 @@ on:
 jobs:
   Push:
     runs-on: ubuntu-latest
-    if: github.repository == 'your-username/EpitechNAN-MSC2027/LaTchatche'
+    if: github.repository == 'EpitechNAN-MSC2027/LaTchatche'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
