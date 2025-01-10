@@ -120,11 +120,18 @@ io.on('connection', (socket) => { // When a user connects
                     io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
                     socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
                     break;
-
+                case "/quit":
+                    let roomToQuit = msg.split(" ")[1];
+                    socket.leave(roomToQuit);
+                    socket.join("default");
+                    currentRoom = "default";
+                    socket.emit('chat message', "You have left the room " + roomToQuit);
+                    break;
                 default:
                     socket.emit('chat message', name + ": Command not found");
                     break;
             }
+            //test
         } else {
             io.to(currentRoom).emit('chat message', name + ": " + msg);
         }
