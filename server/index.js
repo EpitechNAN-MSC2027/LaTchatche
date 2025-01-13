@@ -4,20 +4,48 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const mysql = require('mysql2');
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'irc',
+  password: 'test',
+  database: 'irc_db',
+  port: 3306,
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL:', err.stack);
+    return;
+  }
+  console.log('Connected to MySQL!');
+});
+
+module.exports = connection;
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
+
+async function fetch(table) {
+    connection.query("SELECT * FROM " + table,(err,resultat)=>{
+        if (err) {
+            console.error("Error executing query:", err.message);
+            return;
+          }
+        console.log(resultat)
+      })
+}
 
 //X for nameX
 let x = 1;
 //List of all users
 let users = [];
 //List of all rooms
-let rooms = ["default"];
+let rooms = ["General"];
 
 io.on('connection', (socket) => { // When a user connects
-    let currentRoom = "default";
+    let currentRoom = "General";
     let name = "user" + x;
     x++;
     users.push([name, socket.id]);
@@ -41,7 +69,14 @@ io.on('connection', (socket) => { // When a user connects
             switch (command) {
                 //List all users
                 case "/users":
-                    socket.emit('chat message', "list of users : " + users.map(user => user[0]));
+                    connection.query("SELECT nickname FROM Pairs WHERE channelName = '" + currentRoom +"';",(err,resultat)=>{
+                        if (err) {
+                            console.error("Error executing query:", err.message);
+                            return;
+                          }
+                          const allNicknames = resultat.map(item => item.nickname).join(', ');
+                          socket.emit('chat message', "list of users : " + allNicknames);
+                      })
                     break;
                 // Change name
                 case "/nick":
