@@ -120,6 +120,7 @@ io.on('connection', (socket) => { // When a user connects
                     io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
                     socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
                     break;
+                //Quit room
                 case "/quit":
                     let roomToQuit = msg.split(" ")[1];
                     socket.leave(roomToQuit);
@@ -127,6 +128,21 @@ io.on('connection', (socket) => { // When a user connects
                     currentRoom = "default";
                     socket.emit('chat message', "You have left the room " + roomToQuit);
                     break;
+                //DadJoke
+                case "/dadjoke":
+                    try {
+                        const response = await fetch('https://icanhazdadjoke.com/', {
+                            headers: {
+                                'Accept': 'text/plain'
+                            }
+                        });
+                        const data = await response.text();
+                        io.to(currentRoom).emit('chat message', name + " ask for a Dad joke: " + data);
+                    } catch (error) {
+                        console.log({ error: 'Error fetching API data' });
+                    }
+                    break;
+
                 default:
                     socket.emit('chat message', name + ": Command not found");
                     break;
