@@ -56,9 +56,15 @@ io.on('connection', (socket) => { // When a user connects
                 case "/nick":
                     const newName = msg.split(" ")[1];
                     if (!newName) {
-                        socket.emit('chat message', "Please provide a new nickname.");
+                        socket.emit('chat message', "Please provide a valid nickname.");
                         break;
                     }
+
+                    if (users.some(user => user[0] === newName)) {
+                        socket.emit('chat message', `The nickname "${newName}" is already in use. Please choose another.`);
+                        break;
+                    }
+
                     let userIndex = users.findIndex(user => user[1] === socket.id);
                     let oldName = users[userIndex][0];
                     users[userIndex][0] = newName;
