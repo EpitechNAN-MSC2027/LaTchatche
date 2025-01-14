@@ -6,15 +6,14 @@ CREATE TABLE IF NOT EXISTS Users(
 );
 
 CREATE TABLE IF NOT EXISTS Channels(
-    channelName VARCHAR(255) PRIMARY KEY NOT NULL,
-    alive BOOLEAN NOT NULL DEFAULT true
+    channelName VARCHAR(255) PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Pairs(
     nickname VARCHAR(255),
     channelName VARCHAR(255),
     PRIMARY KEY(nickname,channelName),
-    FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE,
+    FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(channelName) REFERENCES Channels(channelName) ON DELETE CASCADE
 );
 
@@ -23,6 +22,6 @@ CREATE TABLE IF NOT EXISTS Messages(
     dateMessage DATETIME NOT NULL,
     nickname VARCHAR(255),
     channelName VARCHAR(255),
-    FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE,
+    FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(channelName) REFERENCES Channels(channelName) ON DELETE CASCADE
 );
