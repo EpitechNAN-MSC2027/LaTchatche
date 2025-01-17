@@ -39,15 +39,24 @@ io.on('connection', (socket) => { // When a user connects
 
     });
 
+    //Lists of all commands
+    const commandlist = ['/users', '/join', '/nick', '/quit', '/list', '/dadjoke', '/delete', '/create', '/msg', '/rooms'];
+
+    // autocomplete requests
+    socket.on("autocomplete_request", (data) => {
+        const { inputText } = data;
+        const suggestions = commandlist.filter(cmd => cmd.startsWith(inputText));
+        socket.emit("autocomplete_response", { suggestions });
+    });
 
     // When a msg is sent, broadcast it to all users
     socket.on('chat message', async (msg, userroom) => {
+
         if (userroom){
             currentRoom = userroom;
         }
         if (msg.startsWith("/")) {
-            const command = msg.split(" ")[0];
-            switch (command) {
+            switch (msg) {
                 //List all users
                 case "/users":
                     socket.emit('chat message', "list of users : " + users.map(user => user[0]));
