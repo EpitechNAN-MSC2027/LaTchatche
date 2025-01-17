@@ -13,6 +13,10 @@
         #messages { list-style-type: none; margin: 0; padding: 0; }
         #messages > li { padding: 0.5rem 1rem; }
         #messages > li:nth-child(odd) { background: #efefef; }
+        #autocomplete { background: #fff; border: 1px solid #ccc; position: absolute; bottom: 3.5rem; left: 0; right: 0; max-height: 150px; overflow-y: auto; z-index: 1; }
+        #autocomplete ul { list-style-type: none; padding: 0; margin: 0; }
+        #autocomplete li { padding: 0.5rem; cursor: pointer; }
+        #autocomplete li:hover { background: #f1f1f1; }
     </style>
 </head>
 <body>
@@ -20,6 +24,7 @@
 <form id="form" action="">
     <input id="input" autocomplete="off" /><button>Send</button>
 </form>
+<div id="autocomplete"></div>
 <script src="/socket.io/socket.io.js"></script>
 <script>
     var socket = io();
@@ -27,6 +32,16 @@
     var messages = document.getElementById('messages');
     var form = document.getElementById('form');
     var input = document.getElementById('input');
+    const autocompleteDiv = document.getElementById('autocomplete');
+
+    input.addEventListener('input', function() {
+        const inputText = input.value.trim();
+        if (inputText.startsWith("/")) {
+            socket.emit("autocomplete_request", {inputText});
+        } else {
+            autocompleteDiv.innerHTML = ''; // Clear suggestions if not a command
+        }
+    });
 
     form.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -41,6 +56,22 @@
         item.textContent = msg;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
+    });
+
+    // Receive autocomplete suggestions
+    socket.on("autocomplete_response", function(data) {
+        const {suggestions} = data;
+        autocompleteDiv.innerHTML = suggestions.length > 0
+            ? '<ul>' + suggestions.map(s => `<li>${s}</li>`).join('') + '</ul>'
+            : '';
+    });
+
+    // Handle clicking on a suggestion
+    autocompleteDiv.addEventListener('click', function(e) {
+        if (e.target.tagName.toLowerCase() === 'li') {
+            input.value = e.target.textContent;
+            autocompleteDiv.innerHTML = ''; // Clear suggestions on selection
+        }
     });
 </script>
 </body>
