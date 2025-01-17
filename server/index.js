@@ -56,7 +56,8 @@ io.on('connection', (socket) => { // When a user connects
             currentRoom = userroom;
         }
         if (msg.startsWith("/")) {
-            switch (msg) {
+            let cmd = msg.split(" ")[0];
+            switch (cmd) {
                 //List all users
                 case "/users":
                     socket.emit('chat message', "list of users : " + users.map(user => user[0]));
@@ -78,6 +79,7 @@ io.on('connection', (socket) => { // When a user connects
                     let oldName = users[userIndex][0];
                     users[userIndex][0] = newName;
                     name = newName;
+                    users = users.filter(item => item !== oldName);
                     socket.emit('chat message', `Your name has been changed to ${newName}.`);
                     io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
                     break;
