@@ -1,0 +1,82 @@
+<svg id="svgBuilder" class="avatar-frame p-2 p-md-5 bg-white " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 280" style="opacity: 1;">
+  <defs>
+    <clipPath id="b9b980b5-38c2-4c2c-b5a3-0250ab56908c" transform="translate(-59.5 -53.5)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="ae1cd98a-2feb-47b9-a86d-6e1f11f5716f" data-name="SKIN" style="transform: translate(59.7px, 54px);">
+    <g style="clip-path: url(#b9b980b5-38c2-4c2c-b5a3-0250ab56908c)">
+      <g>
+        <path class="first-color" d="M124.8,53.5a65.32,65.32,0,0,0-65.3,65.3v65.3a65.3,65.3,0,1,0,130.6,0V118.8A65.32,65.32,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: rgb(158, 109, 40);"></path>
+        <path d="M124.8,53.5v196a65.32,65.32,0,0,0,65.3-65.3V118.9A65.34,65.34,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #010202;opacity: 0.03;isolation: isolate"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="f17ecd4c-0f42-444c-acaa-c03d7466a8ed" transform="translate(-61.7 -129.4)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="e3efb90f-a358-4d89-8f7c-a99949cbe6d7" data-name="EYES" style="transform: translate(63.15px, 128.5px);">
+    <g style="clip-path: url(#f17ecd4c-0f42-444c-acaa-c03d7466a8ed)">
+      <g>
+        <circle cx="28.5" cy="30" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="28.5" cy="30" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="28.5" cy="30" r="7"></circle>
+        <ellipse cx="83.21" cy="163.87" rx="4.4" ry="3.1" transform="translate(-132.49 -65.84) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="23.5" cy="26.2" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M110.4,145.8H69.9a8.24,8.24,0,0,1-8.2-8.2h0a8.24,8.24,0,0,1,8.2-8.2h40.5a8.24,8.24,0,0,1,8.2,8.2h0A8.24,8.24,0,0,1,110.4,145.8Z" transform="translate(-61.7 -129.4)" style="fill: rgb(64, 41, 0);"></path>
+        <circle cx="95.2" cy="30" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="95.2" cy="30" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="95.2" cy="30" r="7"></circle>
+        <ellipse cx="150.01" cy="163.87" rx="4.4" ry="3.1" transform="translate(-123.54 -32.44) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="90.3" cy="26.2" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M177.2,145.8H136.7a8.24,8.24,0,0,1-8.2-8.2h0a8.24,8.24,0,0,1,8.2-8.2h40.5a8.24,8.24,0,0,1,8.2,8.2h0A8.24,8.24,0,0,1,177.2,145.8Z" transform="translate(-61.7 -129.4)" style="fill: rgb(64, 41, 0);"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="b7ae13d3-d594-4f12-974e-24853187c851" transform="translate(-110.3 -203.3)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="a9c5ace8-a682-47ac-b453-011b04e2bfd2" data-name="MOUTH" style="transform: translate(110.25px, 200px);">
+    <g style="clip-path: url(#b7ae13d3-d594-4f12-974e-24853187c851)">
+      <path d="M110.3,212.6c3-.4,5.7-.7,8.3-1a57,57,0,0,0,7.4-1.5,35.23,35.23,0,0,0,6.8-2.6,80.82,80.82,0,0,0,7-4.2,14.21,14.21,0,0,1-4.2,8,18.24,18.24,0,0,1-8.1,4.6,21.61,21.61,0,0,1-9.1.4A17.19,17.19,0,0,1,110.3,212.6Z" transform="translate(-110.3 -203.3)"></path>
+    </g>
+  </g>
+
+
+
+  <g id="bead2fcf-5299-48b5-ac4d-a921968d650f" data-name="Calque 2" style="transform: translate(59.55px, 133.637px);">
+    <g id="f1d6f900-ef5e-4525-8b38-e139482f7a18" data-name="Calque 1">
+      <g>
+        <path d="M55.91,23.45s3-2.57,9.54-2.57S75,23.45,75,23.45" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></path>
+        <line x1="12" y1="20.37" y2="20.37" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+        <line x1="130.9" y1="20.37" x2="118.39" y2="20.37" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+        <rect x="75" y="1.5" width="43.39" height="43.91" rx="12" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></rect>
+        <rect x="12.52" y="1.5" width="43.39" height="43.91" rx="12" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></rect>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="a8402e66-2723-4bac-b53c-2970e84e1704" transform="translate(-39.3 -2.3)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="bf734fe7-c205-4db8-ac3c-6ea4cdddbc00" data-name="HAIR" style="transform: translate(39.3px, 1px);">
+    <g style="clip-path: url(#a8402e66-2723-4bac-b53c-2970e84e1704)">
+      <g>
+        <path d="M196,94.4a41.87,41.87,0,0,0-6.8-9.8A64.23,64.23,0,0,0,63.7,67c-14.7,10.3-4,90.3-4,90.3a57,57,0,0,0,78.8-5.2,43,43,0,0,0,51.9-10.6C190.3,141.4,205.3,108,196,94.4Z" transform="translate(-39.3 -2.3)" style="fill: #010202;opacity: 0.10000000149011612;isolation: isolate"></path>
+        <g>
+          <path class="first-color" d="M210.7,122.7A84.77,84.77,0,0,0,196,74.8a41.87,41.87,0,0,0-6.8-9.8A64.23,64.23,0,0,0,63.7,47.3,57.21,57.21,0,0,0,39.3,94.1,55.5,55.5,0,0,0,40.8,107a82.19,82.19,0,0,0-1.5,15.8,85.89,85.89,0,0,0,20.3,55.4V137.8a57,57,0,0,0,78.8-5.2A43,43,0,0,0,190.3,122v56.3A86,86,0,0,0,210.7,122.7Z" transform="translate(-39.3 -2.3)" style="fill: rgb(64, 41, 0);"></path>
+          <path d="M138.5,132.4a43,43,0,0,0,51.9-10.6v56.3a84.32,84.32,0,0,0,19.1-41.2c-19.1,17.5-14.4-28.3-14.4-28.3s-37.4,35-57.4,7.8c-5.1,14.3-43.2,48.6-86,4.4,4.2,13.9-2,31.6-11.2,15.7a85.39,85.39,0,0,0,19.2,41.6V137.7a56.84,56.84,0,0,0,78.8-5.3Z" transform="translate(-39.3 -2.3)" style="fill: rgba(0,0,0,0.11)"></path>
+          <path d="M173.3,75.3S169.6,86.2,147.1,92C157.7,96.3,175.4,88.2,173.3,75.3Z" transform="translate(-39.3 -2.3)" style="fill: rgba(0,0,0,0.11)"></path>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

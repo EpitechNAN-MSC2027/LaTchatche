@@ -123,7 +123,12 @@ let users = [];
 let rooms = ["General"];
 
 io.on('connection', (socket) => { // When a user connects
+
     let currentRoom = "General";
+    //User is connected to connectedRooms
+    let connectedRooms = [currentRoom];
+    //currentRoom is the room where the user is writing a message
+
     let name = "user" + x;
     x++;
     InsertChannel([currentRoom]);
@@ -139,16 +144,33 @@ io.on('connection', (socket) => { // When a user connects
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects
         users = users.filter(item => item !== name);
-        io.to(currentRoom).emit('chat message', `${name} left the room.`);
+
         DeletenicknamePair([name]);
+        connectedRooms.forEach(room => {
+            io.to(room).emit('chat message', `${name} left the room.`);
+        })
+
     });
 
+    //Lists of all commands
+    const commandlist = ['/users', '/join', '/nick', '/quit', '/list', '/dadjoke', '/delete', '/create', '/msg', '/rooms'];
+
+    // autocomplete requests
+    socket.on("autocomplete_request", (data) => {
+        const { inputText } = data;
+        const suggestions = commandlist.filter(cmd => cmd.startsWith(inputText));
+        socket.emit("autocomplete_response", { suggestions });
+    });
 
     // When a msg is sent, broadcast it to all users
-    socket.on('chat message', async (msg) => {
+    socket.on('chat message', async (msg, userroom) => {
+
+        if (userroom){
+            currentRoom = userroom;
+        }
         if (msg.startsWith("/")) {
-            const command = msg.split(" ")[0];
-            switch (command) {
+            let cmd = msg.split(" ")[0];
+            switch (cmd) {
                 //List all users
                 case "/users":
                     connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [currentRoom], (err,resultat)=>{
@@ -164,14 +186,21 @@ io.on('connection', (socket) => { // When a user connects
                 case "/nick":
                     const newName = msg.split(" ")[1];
                     if (!newName) {
-                        socket.emit('chat message', "Please provide a new nickname.");
+                        socket.emit('chat message', "Please provide a valid nickname.");
                         break;
                     }
+
+                    if (users.some(user => user[0] === newName)) {
+                        socket.emit('chat message', `The nickname "${newName}" is already in use. Please choose another.`);
+                        break;
+                    }
+
                     let userIndex = users.findIndex(user => user[1] === socket.id);
                     let oldName = users[userIndex][0];
                     users[userIndex][0] = newName;
                     UpdateUser([newName, oldName]);
                     name = newName;
+                    users = users.filter(item => item !== oldName);
                     socket.emit('chat message', `Your name has been changed to ${newName}.`);
                     io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
                     break;
@@ -186,16 +215,23 @@ io.on('connection', (socket) => { // When a user connects
                 //join
                 case "/join":
                     let roomToJoin = msg.split(" ")[1];
-                    if (!rooms.includes(roomToJoin)) {
-                        socket.emit('chat message', name + ": Room not found");
-                        break;
-                    } else {
-                        socket.leave(currentRoom);
-                        socket.join(roomToJoin);
+                    if (connectedRooms.includes(roomToJoin)){
+                        socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
                         currentRoom = roomToJoin;
-                        io.to(roomToJoin).emit('chat message', name + " joined the room");
-                        InsertPair([name,currentRoom])
+
+                    }else{
+                        if (!rooms.includes(roomToJoin)) {
+                            socket.emit('chat message', name + ": Room not found");
+                            break;
+                        } else {
+                            socket.join(roomToJoin);
+                            connectedRooms.push(roomToJoin);
+                            currentRoom = roomToJoin;
+                            InsertPair([name,currentRoom])
+                            io.to(roomToJoin).emit('chat message', name + " joined the room");
+                        }
                     }
+
                     break;
                 //list rooms
                 case "/list":
@@ -247,12 +283,22 @@ io.on('connection', (socket) => { // When a user connects
                     break;
                 //Quit room
                 case "/quit":
+                    //arg
                     let roomToQuit = msg.split(" ")[1];
-                    socket.leave(roomToQuit);
-                    DeletePair([name, roomToQuit]);
-                    socket.join("General");
-                    currentRoom = "General";
-                    socket.emit('chat message', "You have left the room " + roomToQuit);
+                    //Check if user is connected to the room
+                    if (roomToQuit in connectedRooms){
+                        //leave room, join default room, remove from connectedRooms
+                        socket.leave(roomToQuit);
+                        DeletePair([name, roomToQuit]);
+                        socket.join("General");
+                        currentRoom = "General";
+                        let roomIndex = connectedRooms.indexOf(roomToQuit);
+                        connectedRooms.splice(roomindex, 1);
+                        socket.emit('chat message', "You have left the room " + roomToQuit);
+                    }else{
+                        socket.emit('chat message', "You are not connected to this room");
+                    }
+
                     break;
                 //DadJoke
                 case "/dadjoke":
@@ -268,7 +314,10 @@ io.on('connection', (socket) => { // When a user connects
                         console.log({ error: 'Error fetching API data' });
                     }
                     break;
-
+                //List all rooms connected
+                case "/rooms":
+                    socket.emit('chat message', "list of rooms : " + connectedRooms);
+                    break;
                 default:
                     socket.emit('chat message', name + ": Command not found");
                     break;

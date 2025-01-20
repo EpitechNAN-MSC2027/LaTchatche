@@ -1,0 +1,79 @@
+<svg id="svgBuilder" class="avatar-frame p-2 p-md-5 bg-white " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 280" style="opacity: 1;">
+  <defs>
+    <clipPath id="b9b980b5-38c2-4c2c-b5a3-0250ab56908c" transform="translate(-59.5 -53.5)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="ae1cd98a-2feb-47b9-a86d-6e1f11f5716f" data-name="SKIN" style="transform: translate(59.7px, 54px);">
+    <g style="clip-path: url(#b9b980b5-38c2-4c2c-b5a3-0250ab56908c)">
+      <g>
+        <path class="first-color" d="M124.8,53.5a65.32,65.32,0,0,0-65.3,65.3v65.3a65.3,65.3,0,1,0,130.6,0V118.8A65.32,65.32,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: rgb(194, 138, 61);"></path>
+        <path d="M124.8,53.5v196a65.32,65.32,0,0,0,65.3-65.3V118.9A65.34,65.34,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #010202;opacity: 0.03;isolation: isolate"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="beda9165-2264-4a53-a072-0a095227532f" transform="translate(-62.2 -124.9)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="b470c38d-1d72-4985-984b-abe0a058d5dc" data-name="EYES" style="transform: translate(63.4px, 123.9px);">
+    <g style="clip-path: url(#beda9165-2264-4a53-a072-0a095227532f)">
+      <g>
+        <circle cx="27.9" cy="34.6" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="27.9" cy="34.6" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="27.9" cy="34.6" r="7"></circle>
+        <ellipse cx="83.09" cy="163.92" rx="4.4" ry="3.1" transform="translate(-133.02 -61.39) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="23" cy="30.7" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M111.7,141.1l-39.5,9a8.22,8.22,0,0,1-9.8-6.2h0a8.22,8.22,0,0,1,6.2-9.8l39.5-9a8.22,8.22,0,0,1,9.8,6.2h0A8.3,8.3,0,0,1,111.7,141.1Z" transform="translate(-62.2 -124.9)" style="fill: rgb(66, 47, 9);"></path>
+        <circle cx="94.7" cy="34.6" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="94.7" cy="34.6" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="94.7" cy="34.6" r="7"></circle>
+        <ellipse cx="149.89" cy="163.91" rx="4.4" ry="3.1" transform="translate(-124.07 -27.99) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="89.8" cy="30.7" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M177.2,145.8H136.7a8.24,8.24,0,0,1-8.2-8.2h0a8.24,8.24,0,0,1,8.2-8.2h40.5a8.24,8.24,0,0,1,8.2,8.2h0A8.24,8.24,0,0,1,177.2,145.8Z" transform="translate(-62.2 -124.9)" style="fill: rgb(66, 47, 9);"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="efb50588-46f8-450f-9eb6-9b79a95f01cc" transform="translate(-109.5 -205.6)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="a483ccee-3e19-4ccf-91f0-27460b648a73" data-name="MOUTH" style="transform: translate(109.55px, 200px);">
+    <g style="clip-path: url(#efb50588-46f8-450f-9eb6-9b79a95f01cc)">
+      <path d="M109.5,205.6c3,.6,5.6,1.3,8.2,1.8a69.8,69.8,0,0,0,7.4,1.1,35.85,35.85,0,0,0,7.3-.2,77.44,77.44,0,0,0,8-1.7,14.7,14.7,0,0,1-6.6,6.2,18,18,0,0,1-9.2,1.7,20.16,20.16,0,0,1-8.7-2.7A18.06,18.06,0,0,1,109.5,205.6Z" transform="translate(-109.5 -205.6)"></path>
+    </g>
+  </g>
+
+  <g id="af2df20d-27bc-4ae7-ab3c-fd9fc6ab036e" data-name="Calque 2" style="transform: translate(44.195px, 1px);">
+    <g id="ad91b9f4-f77f-4494-ad06-cbaec1af46d3" data-name="Calque 1" style="transform: translate(0, 30px);">
+      <path d="M106.74,0H65A38.1,38.1,0,0,0,32.3,18.74,51.15,51.15,0,0,0,0,66.13V124a50.86,50.86,0,0,0,15.66,36.66c-.2-2.1-.31-4.22-.31-6.37V88.86A65.17,65.17,0,0,1,27,51.59h0c.68-1,1.39-2,2.13-2.9l.36-.45c.7-.89,1.42-1.75,2.16-2.59l.16-.18.1-.12A21.51,21.51,0,0,0,53.15,63.93h76.72a21.2,21.2,0,0,0,10.29-2.65,65.19,65.19,0,0,1,6.1,27.58v65.45c0,1.3,0,2.6-.13,3.88a54.65,54.65,0,0,0,15.48-38.07V54.87A55,55,0,0,0,106.74,0Z" class="first-color" style="fill: rgb(66, 47, 9);"></path>
+      <g>
+        <path d="M146.26,74.23a65.19,65.19,0,0,0-6.1-27.58,21.2,21.2,0,0,1-10.29,2.65H53.15A21.51,21.51,0,0,1,31.92,30.73l-.1.11-.16.18c-.74.84-1.46,1.71-2.16,2.59l-.36.46C28.4,35,27.69,36,27,37h0A65.17,65.17,0,0,0,15.35,74.23V88.86A65.17,65.17,0,0,1,27,51.59h0c.68-1,1.39-2,2.13-2.9l.36-.45c.7-.89,1.42-1.75,2.16-2.59l.16-.18.1-.12A21.51,21.51,0,0,0,53.15,63.93h76.72a21.2,21.2,0,0,0,10.29-2.65,65.19,65.19,0,0,1,6.1,27.58Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M15.35,145.73A50.79,50.79,0,0,1,0,109.4V124a50.86,50.86,0,0,0,15.66,36.66c-.2-2.1-.31-4.22-.31-6.37Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M146.26,154.31c0,1.3,0,2.6-.13,3.88a54.65,54.65,0,0,0,15.48-38.07V105.49a54.67,54.67,0,0,1-15.35,37.94Z" style="fill: rgba(0,0,0,0.11)"></path>
+      </g>
+    </g>
+  </g>
+
+  <g id="bbab9ba9-bb26-4edf-aa18-79bbf497501a" data-name="Calque 2" style="transform: translate(83.8px, 170.561px);">
+    <g id="bc5e5515-ef78-4718-ba3c-5b44a589feed" data-name="Calque 1" style="transform: translateY(13px);">
+      <path d="M71,11.62C67.25-2.87,46.6-.11,41.2.87c-5.4-1-26.06-3.74-29.81,10.75C8.37,23.26.4,19,0,24.62c-.52,7.25,34,17.63,41.19-10,7.17,27.58,41.7,17.2,41.19,10C82,19,74,23.26,71,11.62Z" style="fill: rgb(66, 47, 9);" class="first-color"></path>
+    </g>
+  </g>
+
+  <g id="fad11d47-0265-4e60-918c-c7e965245ce3" data-name="Calque 2" style="transform: translate(59.55px, 114.325px);">
+    <g id="be32d9cf-3f12-496c-8aef-5dc366868244" data-name="Calque 1" style="transform:translateY(30px);">
+      <g>
+        <path d="M55.91,17.21s3-2.57,9.54-2.57S75,17.21,75,17.21" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></path>
+        <line x1="12" y1="14.13" y2="14.13" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+        <line x1="130.9" y1="14.13" x2="118.39" y2="14.13" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+        <rect x="75" y="1.5" width="43.39" height="28.46" rx="12" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></rect>
+        <rect x="12.52" y="1.5" width="43.39" height="28.46" rx="12" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></rect>
+      </g>
+    </g>
+  </g>
+</svg>

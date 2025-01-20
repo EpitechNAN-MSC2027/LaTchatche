@@ -1,0 +1,69 @@
+<svg id="svgBuilder" class="avatar-frame p-2 p-md-5 bg-white " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 280" style="opacity: 1;">
+  <defs>
+    <clipPath id="b9b980b5-38c2-4c2c-b5a3-0250ab56908c" transform="translate(-59.5 -53.5)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="ae1cd98a-2feb-47b9-a86d-6e1f11f5716f" data-name="SKIN" style="transform: translate(59.7px, 54px);">
+    <g style="clip-path: url(#b9b980b5-38c2-4c2c-b5a3-0250ab56908c)">
+      <g>
+        <path class="first-color" d="M124.8,53.5a65.32,65.32,0,0,0-65.3,65.3v65.3a65.3,65.3,0,1,0,130.6,0V118.8A65.32,65.32,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: rgb(119, 88, 26);"></path>
+        <path d="M124.8,53.5v196a65.32,65.32,0,0,0,65.3-65.3V118.9A65.34,65.34,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #010202;opacity: 0.03;isolation: isolate"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="fcfe7f27-8f79-431f-ae24-90ea596e2205" transform="translate(-61.9 -134.3)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="b11a643e-3d3f-4f88-a37b-29cac8377f5f" data-name="EYES" style="transform: translate(63.2px, 133.4px);">
+    <g style="clip-path: url(#fcfe7f27-8f79-431f-ae24-90ea596e2205)">
+      <g>
+        <circle cx="28.4" cy="25.1" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="28.4" cy="25.1" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="28.4" cy="25.1" r="7"></circle>
+        <ellipse cx="83.28" cy="163.79" rx="4.4" ry="3.1" transform="translate(-132.64 -70.71) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="23.4" cy="21.2" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M110.5,150.7H70.1a8.24,8.24,0,0,1-8.2-8.2h0a8.24,8.24,0,0,1,8.2-8.2h40.5a8.24,8.24,0,0,1,8.2,8.2h0A8.32,8.32,0,0,1,110.5,150.7Z" transform="translate(-61.9 -134.3)" style="fill: rgb(0, 0, 0);"></path>
+        <circle cx="95.2" cy="25.1" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="95.2" cy="25.1" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="95.2" cy="25.1" r="7"></circle>
+        <ellipse cx="150.08" cy="163.79" rx="4.4" ry="3.1" transform="translate(-123.69 -37.31) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="90.2" cy="21.2" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M177.3,150.7H136.8a8.24,8.24,0,0,1-8.2-8.2h0a8.24,8.24,0,0,1,8.2-8.2h40.5a8.24,8.24,0,0,1,8.2,8.2h0A8.17,8.17,0,0,1,177.3,150.7Z" transform="translate(-61.9 -134.3)" style="fill: rgb(0, 0, 0);"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="b7ae13d3-d594-4f12-974e-24853187c851" transform="translate(-110.3 -203.3)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="a9c5ace8-a682-47ac-b453-011b04e2bfd2" data-name="MOUTH" style="transform: translate(110.25px, 200px);">
+    <g style="clip-path: url(#b7ae13d3-d594-4f12-974e-24853187c851)">
+      <path d="M110.3,212.6c3-.4,5.7-.7,8.3-1a57,57,0,0,0,7.4-1.5,35.23,35.23,0,0,0,6.8-2.6,80.82,80.82,0,0,0,7-4.2,14.21,14.21,0,0,1-4.2,8,18.24,18.24,0,0,1-8.1,4.6,21.61,21.61,0,0,1-9.1.4A17.19,17.19,0,0,1,110.3,212.6Z" transform="translate(-110.3 -203.3)"></path>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="a66134c0-fc9f-4f2f-b3a4-c51b33eaffa4" transform="translate(-22.9 -1.3)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="b5af7e27-613d-4523-a069-fe296112b7b1" data-name="HAIR" style="transform: translate(22.8px, 1px);">
+    <g style="clip-path: url(#a66134c0-fc9f-4f2f-b3a4-c51b33eaffa4);transform: translate(0, 2.9px);">
+      <g>
+        <path d="M125,22.3c-121.2,0-65.3,116-65.3,116a60.82,60.82,0,0,1,1.2-12.2,90.53,90.53,0,0,0,128.4,0,70.07,70.07,0,0,1,1.2,12.2C190.3,138.4,246.2,22.3,125,22.3Z" transform="translate(-22.9 -1.3)" style="fill: #010202;opacity: 0.10000000149011612;isolation: isolate"></path>
+        <path class="first-color" d="M125,1.3A102.18,102.18,0,0,0,59.7,182V117.4a60.82,60.82,0,0,1,1.2-12.2,90.53,90.53,0,0,0,128.4,0,70.07,70.07,0,0,1,1.2,12.2V182a101.9,101.9,0,0,0,36.8-78.5C227.1,47.1,181.4,1.3,125,1.3Z" transform="translate(-22.9 -1.3)" style="fill: rgb(0, 0, 0);"></path>
+        <path d="M224.9,124.5s-10,21-19.2,8.4-10.2-39-10.2-39-18.4,34.5-70.6,34.5S54.4,93.9,54.4,93.9s-1,26.4-10.2,39-19.1-8.1-19.2-8.4A102.28,102.28,0,0,0,59.6,182V117.4a60.82,60.82,0,0,1,1.2-12.2,90.53,90.53,0,0,0,128.4,0,70.07,70.07,0,0,1,1.2,12.2V182a101.92,101.92,0,0,0,34.5-57.5Z" transform="translate(-22.9 -1.3)" style="fill: rgba(0,0,0,0.11)"></path>
+      </g>
+    </g>
+  </g>
+
+
+
+
+</svg>
