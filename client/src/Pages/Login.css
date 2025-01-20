@@ -1,0 +1,169 @@
+/* Conteneur principal */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(to right, #f5a623, #c85103);
+}
+
+/* Particules */
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.8);
+    animation: float 5s linear infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(-100vh);
+    }
+}
+
+/* Boîte de connexion */
+/* Animation pour le contour dégradé */
+@keyframes gradientBorder {
+    0% {
+        border-image-source: linear-gradient(90deg, #1c1c1c, #c85103, #ffd700);
+    }
+    50% {
+        border-image-source: linear-gradient(90deg, #c85103, #ffd700, #1c1c1c);
+    }
+    100% {
+        border-image-source: linear-gradient(90deg, #ffd700, #1c1c1c, #c85103);
+    }
+}
+
+/* Style pour la boîte de connexion avec contour animé */
+.login-box {
+    text-align: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 20px rgba(14, 13, 13, 0.5);
+    z-index: 2;
+
+    border: 5px solid transparent;
+    border-image-slice: 1;
+    animation: gradientBorder 3s infinite;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.login-box:hover {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 0 30px rgba(239, 230, 231, 0.8);
+    transform: scale(1.02);
+}
+
+/* Logo */
+.login-logo {
+    margin-bottom: 20px;
+    width: 100px;
+    transition: transform 0.3s ease;
+}
+
+.login-logo:hover {
+    transform: rotate(10deg);
+}
+
+/* Conteneur input + bouton */
+.input-button-container {
+    display: flex;
+    flex-direction: column; /* Alignement vertical */
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+/* Champ de saisie */
+.login-input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px #1c1c1c;
+    transform: scale(1.05);
+}
+
+/* Bouton de connexion */
+.login-button {
+    padding: 12px 25px;
+    font-size: 16px;
+    border-radius: 8px;
+    background: linear-gradient(to right, #c85103, #ffd700);
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.login-button:hover {
+    background: linear-gradient(to right, #ffd700, #c85103);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+    transform: translateY(-3px);
+}
+
+/* Message d'erreur */
+.login-error {
+    color: red;
+    margin-top: 15px;
+    font-weight: bold;
+    animation: shakeX 0.5s ease-in-out;
+}
+
+/* Animation shake pour les erreurs */
+@keyframes shakeX {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+    75% {
+        transform: translateX(-5px);
+    }
+}
+
+/* Champ mot de passe */
+.password-input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.password-input:focus {
+    outline: none;
+    box-shadow: 0 0 15px #c85103;
+    transform: scale(1.05);
+}

@@ -1,0 +1,81 @@
+<svg id="svgBuilder" class="avatar-frame p-2 p-md-5 bg-white " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 280" style="opacity: 1;">
+  <defs>
+    <clipPath id="b9b980b5-38c2-4c2c-b5a3-0250ab56908c" transform="translate(-59.5 -53.5)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="ae1cd98a-2feb-47b9-a86d-6e1f11f5716f" data-name="SKIN" style="transform: translate(59.7px, 54px);">
+    <g style="clip-path: url(#b9b980b5-38c2-4c2c-b5a3-0250ab56908c)">
+      <g>
+        <path class="first-color" d="M124.8,53.5a65.32,65.32,0,0,0-65.3,65.3v65.3a65.3,65.3,0,1,0,130.6,0V118.8A65.32,65.32,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: rgb(245, 221, 203);"></path>
+        <path d="M124.8,53.5v196a65.32,65.32,0,0,0,65.3-65.3V118.9A65.34,65.34,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #010202;opacity: 0.03;isolation: isolate"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="a99ebbce-4c6c-47dc-ae83-efc27e1b376f" transform="translate(-61.68 -123.08)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="bbd0bae4-b5be-4c0e-9bdf-0d34a29c2043" data-name="EYES" style="transform: translate(63.23px, 122.08px);">
+    <g style="clip-path: url(#a99ebbce-4c6c-47dc-ae83-efc27e1b376f)">
+      <g>
+        <circle cx="28.42" cy="36.42" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="28.42" cy="36.42" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="28.42" cy="36.42" r="7"></circle>
+        <ellipse cx="83.11" cy="163.97" rx="4.4" ry="3.1" transform="translate(-132.53 -59.56) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="23.42" cy="32.62" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M110.8,139.4l-40.4,2.9a8.17,8.17,0,0,1-8.7-7.6h0a8.17,8.17,0,0,1,7.6-8.7l40.4-2.9a8.17,8.17,0,0,1,8.7,7.6h0A8.17,8.17,0,0,1,110.8,139.4Z" transform="translate(-61.68 -123.08)" style="fill: rgb(225, 150, 14);"></path>
+        <circle cx="95.12" cy="36.42" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="95.12" cy="36.42" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="95.12" cy="36.42" r="7"></circle>
+        <path class="color-eyebrows" d="M136.1,139.4l40.4,2.9a8.17,8.17,0,0,0,8.7-7.6h0a8.17,8.17,0,0,0-7.6-8.7l-40.4-2.9a8.17,8.17,0,0,0-8.7,7.6h0A8.17,8.17,0,0,0,136.1,139.4Z" transform="translate(-61.68 -123.08)" style="fill: rgb(225, 150, 14);"></path>
+        <ellipse cx="149.9" cy="163.97" rx="4.4" ry="3.1" transform="translate(-123.58 -26.16) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="90.22" cy="32.62" r="2.6" style="fill: #fff"></circle>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="b6b690e3-a37a-4013-ac58-2f3f11939aad" transform="translate(0 0.69)">
+      <path id="a96240d9-6c2e-413f-8e27-91d78e064da0" data-name="SVGID" d="M28.46,23C17.06,23,8.16,19.6,2,12.9A7.7,7.7,0,0,1,13.38,2.5c3.14,3.43,8.08,5.1,15.08,5.1S40.4,5.93,43.55,2.5A7.7,7.7,0,1,1,54.9,12.9C48.76,19.6,39.87,23,28.46,23Z" style="fill:none"></path>
+    </clipPath>
+  </defs>
+  <g id="b246c640-4669-4c78-a3da-6d5ea6d27a64" data-name="MOUTH" style="transform: translate(96.54px, 200px);">
+    <g id="b02e1f45-9aa9-46df-b7a0-b8d2f5030449" data-name="Calque 1" style="transform: translateY(1px);">
+      <g style="clip-path:url(#b6b690e3-a37a-4013-ac58-2f3f11939aad)">
+        <path d="M28.46,23C17.06,23,8.16,19.6,2,12.9A7.7,7.7,0,0,1,13.38,2.5c3.14,3.43,8.08,5.1,15.08,5.1S40.4,5.93,43.55,2.5A7.7,7.7,0,1,1,54.9,12.9C48.76,19.6,39.87,23,28.46,23Z" transform="translate(0 0.69)" style="fill:#1d1d1b"></path>
+        <path d="M23.56-.69a4.91,4.91,0,0,0-4.91,4.91v4.9a4.91,4.91,0,0,0,9.81,0V4.22A4.9,4.9,0,0,0,23.56-.69Z" transform="translate(0 0.69)" style="fill:#fff"></path>
+        <path d="M33.37-.69a4.91,4.91,0,0,0-4.91,4.91v4.9a4.91,4.91,0,0,0,9.81,0V4.22A4.91,4.91,0,0,0,33.37-.69Z" transform="translate(0 0.69)" style="fill:#fff"></path>
+        <ellipse cx="28.46" cy="29.68" rx="18.34" ry="12.87" style="fill:#991914"></ellipse>
+      </g>
+    </g>
+  </g>
+
+
+
+  <defs>
+    <clipPath id="ead38d5b-722f-4800-a973-cff3abc03f72" transform="translate(-61.51 -133.38)">
+      <rect id="beb9d244-aaf0-4c3c-b205-544414b40026" data-name="SVGID" width="250" height="250" style="fill:none"></rect>
+    </clipPath>
+  </defs>
+  <g style="clip-path: url(&quot;#ead38d5b-722f-4800-a973-cff3abc03f72&quot;); transform: translate(61.515px, 140.438px);">
+    <g style="transform: translateY(-8px);">
+      <path d="M134.28,166.37s-2.23-2.59-9.28-2.59-9.26,2.56-9.28,2.59l.09-.13-5.1-4.19c.59-.88,4.1-5.27,14.29-5.27s13.69,4.39,14.29,5.27l-5.1,4.19Z" transform="translate(-61.51 -133.38)" style="fill: rgb(212, 58, 58);" class="first-color"></path>
+      <path d="M62.91,138.54c-4.55,5.88,2.5,33,13.84,41.78a26,26,0,1,0,31.72-41.08C97.13,130.48,67.46,132.65,62.91,138.54ZM107,170.88a18.15,18.15,0,0,1-25.47,3.27c-7.94-6.13-13-20.5-8.64-28.06s22.9-6.81,30.84-.68A18.15,18.15,0,0,1,107,170.88Z" transform="translate(-61.51 -133.38)" style="fill: rgb(212, 58, 58);" class="first-color"></path>
+      <path d="M141.53,139.24a26,26,0,1,0,31.72,41.08c11.34-8.76,18.39-35.9,13.84-41.78S152.87,130.48,141.53,139.24Zm4.76,6.17c7.94-6.13,26.5-6.87,30.84.68s-.7,21.93-8.64,28.06a18.16,18.16,0,0,1-22.2-28.74Z" transform="translate(-61.51 -133.38)" style="fill: rgb(212, 58, 58);" class="first-color"></path>
+    </g>
+  </g>
+
+  <g id="f3c1d49b-4923-4ece-adb1-3e1b425583d0" data-name="Calque 2" style="transform: translate(26.29px, 1px);">
+    <g id="bca26773-996e-42ef-9a0f-09d8e03638c4" data-name="Calque 1" style="transform:translateY(14px)">
+      <path d="M177.61,108.43a82.93,82.93,0,1,0-157.8,0,37.84,37.84,0,0,0,14.33,70.92,65.72,65.72,0,0,1-.88-10.66V103.24a65.79,65.79,0,0,1,1-11.12,48.67,48.67,0,0,0,77.63,2.45,33.94,33.94,0,0,0,49.83-9.17,65.26,65.26,0,0,1,2.48,17.84v65.45a65.72,65.72,0,0,1-.88,10.66,37.84,37.84,0,0,0,14.33-70.92Z" class="first-color" style="fill: rgb(225, 150, 14);"></path>
+      <g>
+        <path d="M33.26,161.06A37.88,37.88,0,0,1,1.11,132.63a37.8,37.8,0,0,0,33,46.72,65.72,65.72,0,0,1-.88-10.66Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M164.16,86v-.89a65.2,65.2,0,0,0-2.48-17.84,33.94,33.94,0,0,1-49.83,9.17,48.67,48.67,0,0,1-77.63-2.45,65.7,65.7,0,0,0-1,11.12v18.18a65.79,65.79,0,0,1,1-11.12,48.67,48.67,0,0,0,77.63,2.45,33.94,33.94,0,0,0,49.83-9.17,65.26,65.26,0,0,1,2.48,17.84Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M164.16,161.06v7.63a65.72,65.72,0,0,1-.88,10.66,37.8,37.8,0,0,0,33-46.72A37.88,37.88,0,0,1,164.16,161.06Z" style="fill: rgba(0,0,0,0.11)"></path>
+      </g>
+    </g>
+  </g>
+</svg>
