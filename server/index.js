@@ -4,28 +4,139 @@ const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
+const mysql = require('mysql2');
+const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'irc',
+  password: 'test',
+  database: 'irc_db',
+  port: 3306,
+});
+
+connection.connect((err) => {
+  if (err) {
+    console.error('Error connecting to MySQL:', err.stack);
+    return;
+  }
+  console.log('Connected to MySQL!');
+});
+
+module.exports = connection;
 
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
+
+function getCurrentDatetime() {
+    const now = new Date();
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+    return formattedDate;
+  }
+
+async function InsertMessage(valeur) {
+    connection.query("INSERT INTO Messages (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function InsertPrivateMessage(valeur) {
+    connection.query("INSERT INTO PrivateMessages (nickname,privateReceiver,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function InsertUser(valeur) {
+    connection.query("INSERT IGNORE INTO Users (nickname) VALUES (?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function UpdateUser(valeur) {
+    connection.query("UPDATE Users SET nickname = ? WHERE nickname = ?", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data modified successfully!');
+    });
+}
+
+async function InsertChannel(valeur) {
+    connection.query("INSERT IGNORE INTO Channels (channelName) VALUES (?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function InsertPair(valeur) {
+    connection.query("INSERT IGNORE INTO Pairs (nickname, channelName) VALUES (?, ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function DeletePair(valeur) {
+    connection.query("DELETE FROM Pairs WHERE (nickname = ? AND channelName = ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error deleting data:', err);
+        }
+        console.log('Data deleted successfully!');
+    });
+}
+
+async function DeletenicknamePair(valeur) {
+    connection.query("DELETE FROM Pairs WHERE (nickname = ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error deleting data:', err);
+        }
+        console.log('Data deleted successfully!');
+    });
+}
+
+async function DeletechannelNamePair(valeur) {
+    connection.query("DELETE FROM Pairs WHERE (channelName = ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error deleting data:', err);
+        }
+        console.log('Data deleted successfully!');
+    });
+}
 
 //X for nameX
 let x = 1;
 //List of all users
 let users = [];
 //List of all rooms
-let rooms = ["default"];
+let rooms = ["General"];
 
 io.on('connection', (socket) => { // When a user connects
+
+    let currentRoom = "General";
     //User is connected to connectedRooms
-    let connectedRooms = ["default"];
+    let connectedRooms = [currentRoom];
     //currentRoom is the room where the user is writing a message
-    let currentRoom = "default";
+
     let name = "user" + x;
     x++;
+    InsertChannel([currentRoom]);
+    InsertUser([name]);
     users.push([name, socket.id]);
 
     socket.join(currentRoom); // Join default room
+    InsertPair([name, currentRoom]);
     console.log(`${name} connected`);
     io.to(currentRoom).emit('chat message', `${name} joined the room.`);
 
@@ -33,6 +144,8 @@ io.on('connection', (socket) => { // When a user connects
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects
         users = users.filter(item => item !== name);
+
+        DeletenicknamePair([name]);
         connectedRooms.forEach(room => {
             io.to(room).emit('chat message', `${name} left the room.`);
         })
@@ -60,7 +173,14 @@ io.on('connection', (socket) => { // When a user connects
             switch (cmd) {
                 //List all users
                 case "/users":
-                    socket.emit('chat message', "list of users : " + users.map(user => user[0]));
+                    connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [currentRoom], (err,resultat)=>{
+                        if (err) {
+                            console.error("Error executing query:", err.message);
+                            return;
+                          }
+                          const allNicknames = resultat.map(item => item.nickname).join(', ');
+                          socket.emit('chat message', "list of users : " + allNicknames);
+                      })
                     break;
                 // Change name
                 case "/nick":
@@ -78,6 +198,7 @@ io.on('connection', (socket) => { // When a user connects
                     let userIndex = users.findIndex(user => user[1] === socket.id);
                     let oldName = users[userIndex][0];
                     users[userIndex][0] = newName;
+                    UpdateUser([newName, oldName]);
                     name = newName;
                     users = users.filter(item => item !== oldName);
                     socket.emit('chat message', `Your name has been changed to ${newName}.`);
@@ -86,6 +207,7 @@ io.on('connection', (socket) => { // When a user connects
                 //create
                 case "/create":
                     let room = msg.split(" ")[1];
+                    InsertChannel([room]);
                     rooms.push(room);
                     socket.join(room);
                     io.emit('chat message', "New room : " + room + " has been created by " + name);
@@ -94,9 +216,9 @@ io.on('connection', (socket) => { // When a user connects
                 case "/join":
                     let roomToJoin = msg.split(" ")[1];
                     if (connectedRooms.includes(roomToJoin)){
-                        socket.emit('chat message', name + ": You are connected to this " + roomToJoin);
+                        socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
                         currentRoom = roomToJoin;
-                        io.to(currentRoom).emit('chat message', name + " joined the room");
+
                     }else{
                         if (!rooms.includes(roomToJoin)) {
                             socket.emit('chat message', name + ": Room not found");
@@ -105,6 +227,7 @@ io.on('connection', (socket) => { // When a user connects
                             socket.join(roomToJoin);
                             connectedRooms.push(roomToJoin);
                             currentRoom = roomToJoin;
+                            InsertPair([name,currentRoom])
                             io.to(roomToJoin).emit('chat message', name + " joined the room");
                         }
                     }
@@ -120,16 +243,20 @@ io.on('connection', (socket) => { // When a user connects
                     if (!rooms.includes(roomToDelete)) {
                         socket.emit('chat message', name + ": Room not found");
                         break;
-                    } else {
+                    } 
+                    else if (roomToDelete == "General") {
+                        socket.emit(name + ": Can't delete the General channel");
+                    }else {
+                        DeletechannelNamePair([roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
                         io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
                         let socketsInRoom = await io.in(roomToDelete).fetchSockets();
                         socketsInRoom.forEach((socket) => {
                             socket.leave(roomToDelete);
-                            socket.join("default");
-                            currentRoom = "default";
+                            socket.join("General");
+                            currentRoom = "General";
                         });
-                        io.to("default").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the default room.');
+                        io.to("General").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the General room.');
                         break;
                     }
                 //Private msg
@@ -152,6 +279,7 @@ io.on('connection', (socket) => { // When a user connects
 
                     io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
                     socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
+                    InsertPrivateMessage([name,userToMsg,getCurrentDatetime(),msg]);
                     break;
                 //Quit room
                 case "/quit":
@@ -161,14 +289,16 @@ io.on('connection', (socket) => { // When a user connects
                     if (roomToQuit in connectedRooms){
                         //leave room, join default room, remove from connectedRooms
                         socket.leave(roomToQuit);
-                        socket.join("default");
-                        currentRoom = "default";
+                        DeletePair([name, roomToQuit]);
+                        socket.join("General");
+                        currentRoom = "General";
                         let roomIndex = connectedRooms.indexOf(roomToQuit);
                         connectedRooms.splice(roomindex, 1);
                         socket.emit('chat message', "You have left the room " + roomToQuit);
                     }else{
                         socket.emit('chat message', "You are not connected to this room");
                     }
+
                     break;
                 //DadJoke
                 case "/dadjoke":
@@ -194,6 +324,7 @@ io.on('connection', (socket) => { // When a user connects
             }
         } else {
             io.to(currentRoom).emit('chat message', name + ": " + msg);
+            InsertMessage([name,currentRoom,getCurrentDatetime(),msg]);
         }
 
     });
