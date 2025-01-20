@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
 import RoomList from "./Pages/RoomList";
 import AvatarSelection from "./Pages/AvatarSelection";
+import { io } from "socket.io-client";
 
 function App() {
     const [nickname, setNickname] = useState(""); // Stocker le pseudo globalement
@@ -10,6 +11,7 @@ function App() {
 
     // Gestion de la connexion
     const handleConnect = (nicknameInput) => {
+        const socket = io("localhost:3001"); // Connexion au serveur
         setNickname(nicknameInput); // Stocker le pseudo
         console.log("Connected as:", nicknameInput);
     };
