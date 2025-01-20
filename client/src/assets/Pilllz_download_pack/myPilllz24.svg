@@ -1,0 +1,124 @@
+<svg id="svgBuilder" class="avatar-frame p-2 p-md-5 bg-white " xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 280" style="opacity: 1;">
+  <defs>
+    <clipPath id="b9b980b5-38c2-4c2c-b5a3-0250ab56908c" transform="translate(-59.5 -53.5)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="ae1cd98a-2feb-47b9-a86d-6e1f11f5716f" data-name="SKIN" style="transform: translate(59.7px, 54px);">
+    <g style="clip-path: url(#b9b980b5-38c2-4c2c-b5a3-0250ab56908c)">
+      <g>
+        <path class="first-color" d="M124.8,53.5a65.32,65.32,0,0,0-65.3,65.3v65.3a65.3,65.3,0,1,0,130.6,0V118.8A65.32,65.32,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #f0c87f"></path>
+        <path d="M124.8,53.5v196a65.32,65.32,0,0,0,65.3-65.3V118.9A65.34,65.34,0,0,0,124.8,53.5Z" transform="translate(-59.5 -53.5)" style="fill: #010202;opacity: 0.03;isolation: isolate"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="a99ebbce-4c6c-47dc-ae83-efc27e1b376f" transform="translate(-61.68 -123.08)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+  </defs>
+  <g id="bbd0bae4-b5be-4c0e-9bdf-0d34a29c2043" data-name="EYES" style="transform: translate(63.23px, 122.08px);">
+    <g style="clip-path: url(#a99ebbce-4c6c-47dc-ae83-efc27e1b376f)">
+      <g>
+        <circle cx="28.42" cy="36.42" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="28.42" cy="36.42" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="28.42" cy="36.42" r="7"></circle>
+        <ellipse cx="83.11" cy="163.97" rx="4.4" ry="3.1" transform="translate(-132.53 -59.56) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="23.42" cy="32.62" r="2.6" style="fill: #fff"></circle>
+        <path class="color-eyebrows" d="M110.8,139.4l-40.4,2.9a8.17,8.17,0,0,1-8.7-7.6h0a8.17,8.17,0,0,1,7.6-8.7l40.4-2.9a8.17,8.17,0,0,1,8.7,7.6h0A8.17,8.17,0,0,1,110.8,139.4Z" transform="translate(-61.68 -123.08)" style="fill: rgb(62, 33, 23);"></path>
+        <circle cx="95.12" cy="36.42" r="16.5" style="fill: #f6f6f6"></circle>
+        <circle class="first-color" cx="95.12" cy="36.42" r="11.4" style="fill: #1f5da1"></circle>
+        <circle cx="95.12" cy="36.42" r="7"></circle>
+        <path class="color-eyebrows" d="M136.1,139.4l40.4,2.9a8.17,8.17,0,0,0,8.7-7.6h0a8.17,8.17,0,0,0-7.6-8.7l-40.4-2.9a8.17,8.17,0,0,0-8.7,7.6h0A8.17,8.17,0,0,0,136.1,139.4Z" transform="translate(-61.68 -123.08)" style="fill: rgb(62, 33, 23);"></path>
+        <ellipse cx="149.9" cy="163.97" rx="4.4" ry="3.1" transform="translate(-123.58 -26.16) rotate(-30)" style="fill: #fff"></ellipse>
+        <circle cx="90.22" cy="32.62" r="2.6" style="fill: #fff"></circle>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="fb31c9e0-c18e-4a1c-b864-fb8bf4960266" transform="translate(-85.8 -192)">
+      <rect width="250" height="250" style="fill: none"></rect>
+    </clipPath>
+    <clipPath id="be026ed7-8f9a-4b5b-8faf-10ac38dc631d" transform="translate(-85.8 -192)">
+      <path d="M144.3,217.3H105.7a8.71,8.71,0,0,1-8.7-8.7h0a8.71,8.71,0,0,1,8.7-8.7h38.6a8.71,8.71,0,0,1,8.7,8.7h0A8.71,8.71,0,0,1,144.3,217.3Z" style="fill: none"></path>
+    </clipPath>
+  </defs>
+  <g id="b83eeea3-3ed5-44b7-b6de-707600f6e364" data-name="MOUTH" style="transform: translate(85.8px, 200px);">
+    <g style="clip-path: url(#fb31c9e0-c18e-4a1c-b864-fb8bf4960266)">
+      <g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M144.3,217.3H105.7a8.71,8.71,0,0,1-8.7-8.7h0a8.71,8.71,0,0,1,8.7-8.7h38.6a8.71,8.71,0,0,1,8.7,8.7h0A8.71,8.71,0,0,1,144.3,217.3Z" transform="translate(-85.8 -192)"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M90.7,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,1,0,9.8,0v-4.9A4.91,4.91,0,0,0,90.7,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M159.3,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,0,0,9.8,0v-4.9A4.91,4.91,0,0,0,159.3,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M100.5,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,1,0,9.8,0v-4.9A4.91,4.91,0,0,0,100.5,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M110.3,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,0,0,9.8,0v-4.9A4.91,4.91,0,0,0,110.3,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M120.1,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,0,0,9.8,0v-4.9A4.91,4.91,0,0,0,120.1,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M129.9,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,0,0,9.8,0v-4.9A4.91,4.91,0,0,0,129.9,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M139.7,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,0,0,9.8,0v-4.9A4.91,4.91,0,0,0,139.7,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <path d="M149.5,193.6a4.91,4.91,0,0,0-4.9,4.9v4.9a4.9,4.9,0,1,0,9.8,0v-4.9A4.91,4.91,0,0,0,149.5,193.6Z" transform="translate(-85.8 -192)" style="fill: #fff"></path>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <rect x="9.8" width="58.7" height="9" style="fill: #fff"></rect>
+        </g>
+        <g style="clip-path: url(#be026ed7-8f9a-4b5b-8faf-10ac38dc631d)">
+          <ellipse cx="39.2" cy="31.3" rx="18.3" ry="12.8" style="fill: #991914"></ellipse>
+        </g>
+      </g>
+    </g>
+  </g>
+
+  <g id="e54640ba-a1bb-4bfc-a076-5f6e2ea0c3a7" data-name="Calque 2" style="transform: translate(49.425px, 1px);">
+    <g id="ef8db2f8-d58b-4710-8a4a-16b3ccb8a327" data-name="Calque 1" style="transform: translate(0, 37px);">
+      <path d="M91.63,0H59.52A59.69,59.69,0,0,0,0,59.52V114.1a59.1,59.1,0,0,0,10.12,33.09V87.92a65.09,65.09,0,0,1,9-33.1c5.45,10,20.34,17.85,39.32,20.86a22.21,22.21,0,0,0,1.27,5.7c4.34,11.53,17,13.91,18.06,13.42.71-.32,2.51-5.8,2.46-13,9,6.46,20,3,20.69,2.08.39-.51-.22-4.44-2.36-9.33C114.73,71,127.15,63.73,132,54.82A65.3,65.3,0,0,1,139,71.56c.27,1,.51,2.11.73,3.17A65.86,65.86,0,0,1,141,87.92h0v59.27a59.1,59.1,0,0,0,10.12-33.09V59.52A59.69,59.69,0,0,0,91.63,0Z" class="first-color" style="fill: #3e2117"></path>
+      <g>
+        <path d="M80.23,74.3c0,7.18-1.75,12.65-2.46,13-1.09.49-13.72-1.9-18.06-13.42a22.28,22.28,0,0,1-1.27-5.71c-19-3-34.13-9.94-37.54-28.32C15.2,49.54,10.12,68.32,10.12,80.4v7.52a65.09,65.09,0,0,1,9-33.1c5.45,10,20.34,17.85,39.32,20.86a22.21,22.21,0,0,0,1.27,5.7c4.34,11.53,17,13.91,18.06,13.42.71-.32,2.51-5.8,2.46-13,9,6.46,20,3,20.69,2.08.32-.42,0-3.16-1.36-6.84C96.23,78.23,87.58,79.56,80.23,74.3Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M0,114.1a59.1,59.1,0,0,0,10.12,33.09v-7.52A59.11,59.11,0,0,1,0,106.57Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M141,80.4h0a65.86,65.86,0,0,0-1.33-13.19c-.22-1.07-.46-2.12-.73-3.17-1.54-6-5.58-19-8.62-24.21.85,13.11-22.47,31.25-29.52,34.2,15-3.75,26.56-10.72,31.2-19.21A65.3,65.3,0,0,1,139,71.56c.27,1,.51,2.11.73,3.17A65.86,65.86,0,0,1,141,87.92Z" style="fill: rgba(0,0,0,0.11)"></path>
+        <path d="M141,147.19a59.1,59.1,0,0,0,10.12-33.09v-7.53A59.11,59.11,0,0,1,141,139.67Z" style="fill: rgba(0,0,0,0.11)"></path>
+      </g>
+    </g>
+  </g>
+
+  <defs>
+    <clipPath id="be2c64e4-9fae-4989-b870-aff87c5daca1" transform="translate(-0.22 -116.97)">
+      <path d="M65.45,0A65.45,65.45,0,0,0,0,65.45V130.9a65.45,65.45,0,1,0,130.9,0V65.45A65.45,65.45,0,0,0,65.45,0Z" style="fill: none"></path>
+    </clipPath>
+  </defs>
+  <g id="e786f3e9-418c-4c46-9c54-c344c6cc85aa" data-name="Calque 2" style="transform: translate(59.55px, 171.184px);">
+    <g id="bebaff1f-b03a-473e-9e8e-d56ded3dbc0e" data-name="Calque 1">
+      <g style="clip-path: url(#be2c64e4-9fae-4989-b870-aff87c5daca1)">
+        <path d="M119.12,136.1H12.22c-6.6,0-12-24.6-12-18v85.39a12,12,0,0,0,12,12h106.9a12,12,0,0,0,12-12V118.1C131.12,111.5,125.72,136.1,119.12,136.1Zm-21.6,33.74c0,6.6-9.4,12-16,12H49.82c-6.6,0-16-5.4-16-12v-14c0-6.6,9.4-12,16-12h31.7c6.6,0,16,5.4,16,12Z" transform="translate(-0.22 -116.97)" class="first-color" style="fill: rgb(62, 33, 23);"></path>
+      </g>
+    </g>
+  </g>
+
+  <g id="b8fb0b44-ffa0-4773-b20b-26a2ade0610b" data-name="Calque 2" style="transform: translate(59.55px, 133.637px);">
+    <g id="be9e3fef-dad1-4b40-851e-7643ac638c4d" data-name="Calque 1">
+      <g>
+        <circle cx="33.95" cy="23.45" r="21.95" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></circle>
+        <circle cx="96.95" cy="23.45" r="21.95" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></circle>
+        <path d="M55.91,23.45s3-2.57,9.54-2.57S75,23.45,75,23.45" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></path>
+        <line x1="12" y1="20.37" y2="20.37" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+        <line x1="130.9" y1="20.37" x2="118.39" y2="20.37" class="first-color-stroke" style="fill: none;stroke: #1d1d1b;stroke-miterlimit: 10;stroke-width: 3px"></line>
+      </g>
+    </g>
+  </g>
+</svg>
