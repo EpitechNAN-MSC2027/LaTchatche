@@ -5,7 +5,7 @@ const server = http.createServer(app);
 const { Server } = require("socket.io");
 const io = new Server(server);
 const mysql = require('mysql2');
-const { DATETIME } = require('mysql/lib/protocol/constants/types');
+const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'irc',
@@ -28,8 +28,23 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
+function getCurrentDatetime() {
+    const now = new Date();
+    const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
+    return formattedDate;
+  }
+
 async function InsertMessage(valeur) {
-    connection.query("INSERT INTO Message (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
+    connection.query("INSERT INTO Messages (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+        }
+        console.log('Data inserted successfully!');
+    });
+}
+
+async function InsertPrivateMessage(valeur) {
+    connection.query("INSERT INTO PrivateMessages (nickname,privateReceiver,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
@@ -47,7 +62,7 @@ async function InsertUser(valeur) {
 }
 
 async function UpdateUser(valeur) {
-    connection.query("UPDATE Users SET nickname = ?", valeur, (err, result) => {
+    connection.query("UPDATE Users SET nickname = ? WHERE nickname = ?", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
@@ -111,6 +126,7 @@ io.on('connection', (socket) => { // When a user connects
     let currentRoom = "General";
     let name = "user" + x;
     x++;
+    InsertChannel([currentRoom]);
     InsertUser([name]);
     users.push([name, socket.id]);
 
@@ -124,7 +140,7 @@ io.on('connection', (socket) => { // When a user connects
     socket.on('disconnect', () => { // When a user disconnects
         users = users.filter(item => item !== name);
         io.to(currentRoom).emit('chat message', `${name} left the room.`);
-        DeletenicknamePair([currentName]);
+        DeletenicknamePair([name]);
     });
 
 
@@ -154,7 +170,7 @@ io.on('connection', (socket) => { // When a user connects
                     let userIndex = users.findIndex(user => user[1] === socket.id);
                     let oldName = users[userIndex][0];
                     users[userIndex][0] = newName;
-                    InsertUser([newName]);
+                    UpdateUser([newName, oldName]);
                     name = newName;
                     socket.emit('chat message', `Your name has been changed to ${newName}.`);
                     io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
@@ -191,7 +207,10 @@ io.on('connection', (socket) => { // When a user connects
                     if (!rooms.includes(roomToDelete)) {
                         socket.emit('chat message', name + ": Room not found");
                         break;
-                    } else {
+                    } 
+                    else if (roomToDelete == "General") {
+                        socket.emit(name + ": Can't delete the General channel");
+                    }else {
                         DeletechannelNamePair([roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
                         io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
@@ -224,6 +243,7 @@ io.on('connection', (socket) => { // When a user connects
 
                     io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
                     socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
+                    InsertPrivateMessage([name,userToMsg,getCurrentDatetime(),msg]);
                     break;
                 //Quit room
                 case "/quit":
@@ -255,7 +275,7 @@ io.on('connection', (socket) => { // When a user connects
             }
         } else {
             io.to(currentRoom).emit('chat message', name + ": " + msg);
-            InsertMessage(name,currentRoom,"2025-01-13 14:30:00",msg)
+            InsertMessage([name,currentRoom,getCurrentDatetime(),msg]);
         }
 
     });

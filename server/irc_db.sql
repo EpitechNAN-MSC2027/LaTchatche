@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS Channels(
 );
 
 CREATE TABLE IF NOT EXISTS Pairs(
-    nickname VARCHAR(255),
-    channelName VARCHAR(255),
+    nickname VARCHAR(255) NOT NULL,
+    channelName VARCHAR(255) NOT NULL,
     PRIMARY KEY(nickname,channelName),
     FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(channelName) REFERENCES Channels(channelName) ON DELETE CASCADE
@@ -20,8 +20,17 @@ CREATE TABLE IF NOT EXISTS Pairs(
 CREATE TABLE IF NOT EXISTS Messages(
     texteMessage VARCHAR(255) NOT NULL,
     dateMessage DATETIME NOT NULL,
-    nickname VARCHAR(255),
-    channelName VARCHAR(255),
+    nickname VARCHAR(255) NOT NULL,
+    channelName VARCHAR(255) NOT NULL,
     FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE,
     FOREIGN KEY(channelName) REFERENCES Channels(channelName) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS PrivateMessages(
+    texteMessage VARCHAR(255) NOT NULL,
+    dateMessage DATETIME NOT NULL,
+    nickname VARCHAR(255) NOT NULL,
+    privateReceiver VARCHAR(255) NOT NULL,
+    FOREIGN KEY(nickname) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY(privateReceiver) REFERENCES Users(nickname) ON DELETE CASCADE ON UPDATE CASCADE
 );
