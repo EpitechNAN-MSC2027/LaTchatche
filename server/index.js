@@ -3,9 +3,16 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
 const mysql = require('mysql2');
 const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
+const io = new Server(server, {
+    cors: {
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST'],
+        allowedHeaders: ['Content-Type'],
+        credentials: true
+    }
+});
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'irc',
@@ -332,6 +339,6 @@ io.on('connection', (socket) => { // When a user connects
 
 
 
-server.listen(3000, () => {
-    console.log('listening on *:3000');
+server.listen(3001, () => {
+    console.log('listening on *:3001');
 });
