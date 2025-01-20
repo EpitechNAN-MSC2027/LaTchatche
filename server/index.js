@@ -279,7 +279,7 @@ io.on('connection', (socket) => { // When a user connects
 
                     io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
                     socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
-                    InsertPrivateMessage([name,userToMsg,getCurrentDatetime(),msg]);
+                    InsertPrivateMessage([name,userToMsg,getCurrentDatetime(),msgToUser]);
                     break;
                 //Quit room
                 case "/quit":
