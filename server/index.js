@@ -107,6 +107,15 @@ async function DeletenicknamePair(valeur) {
     });
 }
 
+async function DeleteEveryPair() {
+    connection.query("DELETE FROM Pairs", (err, result) => {
+        if (err) {
+            console.error('Error deleting data:', err);
+        }
+        console.log('Data deleted successfully!');
+    });
+}
+
 async function DeletechannelNamePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (channelName = ?)", valeur, (err, result) => {
         if (err) {
@@ -194,6 +203,7 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit('chat message', `The nickname "${newName}" is already in use. Please choose another.`);
                         break;
                     }
+                    
 
                     let userIndex = users.findIndex(user => user[1] === socket.id);
                     let oldName = users[userIndex][0];
@@ -334,4 +344,5 @@ io.on('connection', (socket) => { // When a user connects
 
 server.listen(5000, () => {
     console.log('listening on *:5000');
+    DeleteEveryPair();
 });
