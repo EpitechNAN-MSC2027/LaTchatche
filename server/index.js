@@ -63,8 +63,8 @@ async function InsertPrivateMessage(valeur) {
     });
 }
 
-async function InsertUser(nickname, iconID) {
-    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", [nickname, iconID], (err, result) => {
+async function InsertUser(valeur) {
+    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => 
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -118,6 +118,15 @@ async function DeletenicknamePair(valeur) {
     });
 }
 
+async function DeleteEveryPair() {
+    connection.query("DELETE FROM Pairs", (err, result) => {
+        if (err) {
+            console.error('Error deleting data:', err);
+        }
+        console.log('Data deleted successfully!');
+    });
+}
+
 async function DeletechannelNamePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (channelName = ?)", valeur, (err, result) => {
         if (err) {
@@ -145,9 +154,8 @@ io.on('connection', (socket) => { // When a user connects
         name = nickname;
     });
     socket.on('avatar', (avatar) => {
-        InsertUser(name, avatar);
+        InsertUser([name, avatar]);
     });
-
 
     socket.on('join-room', (room) => {
         socket.join(currentRoom); // Join default room
@@ -195,7 +203,6 @@ io.on('connection', (socket) => { // When a user connects
                     connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [currentRoom], (err,resultat)=>{
                         if (err) {
                             console.error("Error executing query:", err.message);
-                            return;
                           }
                           const allNicknames = resultat.map(item => item.nickname).join(', ');
                           socket.emit('chat message', "list of users : " + allNicknames);
@@ -208,20 +215,23 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit('chat message', "Please provide a valid nickname.");
                         break;
                     }
+                    
+                    connection.query("SELECT nickname FROM Users WHERE nickname = ? LIMIT 1", [newName], (err, results) => {
 
-                    if (users.some(user => user[0] === newName)) {
-                        socket.emit('chat message', `The nickname "${newName}" is already in use. Please choose another.`);
-                        break;
-                    }
+                        if (results.length > 0) {
+                            socket.emit('chat message', `Nickname denied. ${newName} is already existant.`);
+                        } else {
+                            let userIndex = users.findIndex(user => user[1] === socket.id);
+                            let oldName = users[userIndex][0];
+                            users[userIndex][0] = newName;
+                            UpdateUser([newName, oldName]);
+                            name = newName;
+                            users = users.filter(item => item !== oldName);
+                            socket.emit('chat message', `Your name has been changed to ${newName}.`);
+                            io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
+                        }
+                    });
 
-                    let userIndex = users.findIndex(user => user[1] === socket.id);
-                    let oldName = users[userIndex][0];
-                    users[userIndex][0] = newName;
-                    UpdateUser([newName, oldName]);
-                    name = newName;
-                    users = users.filter(item => item !== oldName);
-                    socket.emit('chat message', `Your name has been changed to ${newName}.`);
-                    io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
                     break;
                 //create
                 case "/create":
@@ -353,4 +363,5 @@ io.on('connection', (socket) => { // When a user connects
 
 server.listen(5000, () => {
     console.log('listening on *:5000');
+    DeleteEveryPair();
 });
