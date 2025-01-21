@@ -3,16 +3,26 @@ const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const { Server } = require("socket.io");
-const io = new Server(server);
+
+//Import dotenv & load .env
+const dotenv = require('dotenv');
+dotenv.config();
+const io = new Server(server, {
+    cors: {
+        origin: [ process.env.IP, "http://localhost:3000"],
+        methods: ["GET", "POST"],
+    },
+});
 const mysql = require('mysql2');
 const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
-const bcrypt = require('bcrypt');
+
+//Mysql connection
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'irc',
-  password: 'test',
-  database: 'irc_db',
-  port: 3306,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
 });
 
 connection.connect((err) => {
@@ -53,9 +63,8 @@ async function InsertPrivateMessage(valeur) {
     });
 }
 
-async function InsertUser(nickname, password, iconID) {
-    const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    connection.query("INSERT IGNORE INTO Users (nickname, userPassword, iconID) VALUES (?, ?, ?)", [nickname, hashed, iconID], (err, result) => {
+async function InsertUser(nickname, iconID) {
+    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", [nickname, iconID], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -126,22 +135,30 @@ let users = [];
 let rooms = ["General"];
 
 io.on('connection', (socket) => { // When a user connects
-
-    let currentRoom = "General";
+    let currentRoom
     //User is connected to connectedRooms
     let connectedRooms = [currentRoom];
     //currentRoom is the room where the user is writing a message
+    let name;
 
-    let name = "user" + x;
-    x++;
-    InsertChannel([currentRoom]);
-    InsertUser(name, "Password", 1);
-    users.push([name, socket.id]);
+    socket.on('login', (nickname) => {
+        name = nickname;
+    });
+    socket.on('avatar', (avatar) => {
+        InsertUser(name, avatar);
+    });
 
-    socket.join(currentRoom); // Join default room
-    InsertPair([name, currentRoom]);
-    console.log(`${name} connected`);
-    io.to(currentRoom).emit('chat message', `${name} joined the room.`);
+
+    socket.on('join-room', (room) => {
+        socket.join(currentRoom); // Join default room
+        currentRoom = room;
+        console.log("joined room: " + currentRoom + " by " + name);
+        InsertPair([name, currentRoom]);
+        if (!name) {
+            console.log("Warning: Name is undefined in join-room handler");
+        }
+        io.to(currentRoom).emit('chat message', `${name} joined the room.`);
+    });
 
 
     // When a user disconnects
