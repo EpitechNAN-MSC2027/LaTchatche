@@ -68,6 +68,7 @@ function RoomList({ nickname, avatar }) {
 
     const handleRoomJoin = (roomName) => {
         alert(`You have joined the room: ${roomName}`);
+        window.location.href = 'http://localhost:5000';
     };
 
     const handleRoomDelete = (roomId) => {

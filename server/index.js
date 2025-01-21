@@ -335,5 +335,5 @@ io.on('connection', (socket) => { // When a user connects
 
 
 server.listen(5000, () => {
-    console.log('listening on *:3000');
+    console.log('listening on *:5000');
 });
