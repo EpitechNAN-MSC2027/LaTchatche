@@ -185,7 +185,6 @@ io.on('connection', (socket) => { // When a user connects
                     connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [currentRoom], (err,resultat)=>{
                         if (err) {
                             console.error("Error executing query:", err.message);
-                            return;
                           }
                           const allNicknames = resultat.map(item => item.nickname).join(', ');
                           socket.emit('chat message', "list of users : " + allNicknames);
@@ -198,21 +197,23 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit('chat message', "Please provide a valid nickname.");
                         break;
                     }
-
-                    if (users.some(user => user[0] === newName)) {
-                        socket.emit('chat message', `The nickname "${newName}" is already in use. Please choose another.`);
-                        break;
-                    }
                     
+                    connection.query("SELECT nickname FROM Users WHERE nickname = ? LIMIT 1", [newName], (err, results) => {
 
-                    let userIndex = users.findIndex(user => user[1] === socket.id);
-                    let oldName = users[userIndex][0];
-                    users[userIndex][0] = newName;
-                    UpdateUser([newName, oldName]);
-                    name = newName;
-                    users = users.filter(item => item !== oldName);
-                    socket.emit('chat message', `Your name has been changed to ${newName}.`);
-                    io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
+                        if (results.length > 0) {
+                            socket.emit('chat message', `Nickname denied. ${newName} is already existant.`);
+                        } else {
+                            let userIndex = users.findIndex(user => user[1] === socket.id);
+                            let oldName = users[userIndex][0];
+                            users[userIndex][0] = newName;
+                            UpdateUser([newName, oldName]);
+                            name = newName;
+                            users = users.filter(item => item !== oldName);
+                            socket.emit('chat message', `Your name has been changed to ${newName}.`);
+                            io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
+                        }
+                    });
+
                     break;
                 //create
                 case "/create":
