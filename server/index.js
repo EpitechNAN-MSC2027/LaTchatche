@@ -6,7 +6,6 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const mysql = require('mysql2');
 const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
-const bcrypt = require('bcrypt');
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'irc',
@@ -53,9 +52,8 @@ async function InsertPrivateMessage(valeur) {
     });
 }
 
-async function InsertUser(nickname, password, iconID) {
-    const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    connection.query("INSERT IGNORE INTO Users (nickname, userPassword, iconID) VALUES (?, ?, ?)", [nickname, hashed, iconID], (err, result) => {
+async function InsertUser(valeur) {
+    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -135,7 +133,7 @@ io.on('connection', (socket) => { // When a user connects
     let name = "user" + x;
     x++;
     InsertChannel([currentRoom]);
-    InsertUser(name, "Password", 1);
+    InsertUser([name, 1]);
     users.push([name, socket.id]);
 
     socket.join(currentRoom); // Join default room

@@ -3,7 +3,6 @@ USE irc_db;
 
 CREATE TABLE IF NOT EXISTS Users(
     nickname VARCHAR(255) PRIMARY KEY NOT NULL,
-    userPassword VARCHAR(255) NOT NULL,
     iconID INT NOT NULL
 );
 
