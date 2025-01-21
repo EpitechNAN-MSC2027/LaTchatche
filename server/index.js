@@ -53,9 +53,9 @@ async function InsertPrivateMessage(valeur) {
     });
 }
 
-async function InsertUser(nickname, password) {
+async function InsertUser(nickname, password, iconID) {
     const hashed = bcrypt.hashSync(password, bcrypt.genSaltSync(10));
-    connection.query("INSERT IGNORE INTO Users (nickname, password) VALUES (?, ?)", [nickname, hashed], (err, result) => {
+    connection.query("INSERT IGNORE INTO Users (nickname, userPassword, iconID) VALUES (?, ?, ?)", [nickname, hashed, iconID], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -135,7 +135,7 @@ io.on('connection', (socket) => { // When a user connects
     let name = "user" + x;
     x++;
     InsertChannel([currentRoom]);
-    InsertUser(name, "Password");
+    InsertUser(name, "Password", 1);
     users.push([name, socket.id]);
 
     socket.join(currentRoom); // Join default room
@@ -152,7 +152,6 @@ io.on('connection', (socket) => { // When a user connects
         connectedRooms.forEach(room => {
             io.to(room).emit('chat message', `${name} left the room.`);
         })
-
     });
 
     //Lists of all commands
@@ -335,6 +334,6 @@ io.on('connection', (socket) => { // When a user connects
 
 
 
-server.listen(3000, () => {
+server.listen(5000, () => {
     console.log('listening on *:3000');
 });
