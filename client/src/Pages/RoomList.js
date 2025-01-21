@@ -11,6 +11,7 @@ import {
 } from "react-icons/fi"; // Import des icônes
 import { Modal } from "antd"; // Pour le modal
 import "./RoomList.css";
+import { socket } from '../socket';
 
 function RoomList({ nickname, avatar }) {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -67,7 +68,8 @@ function RoomList({ nickname, avatar }) {
     };
 
     const handleRoomJoin = (roomName) => {
-        alert(`You have joined the room: ${roomName}`);
+        //alert(`You have joined the room: ${roomName}`);
+        socket.emit("join-room", roomName);
         window.location.href = 'http://localhost:5000';
     };
 
