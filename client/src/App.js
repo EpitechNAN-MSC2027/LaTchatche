@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./Pages/Login";
 import RoomList from "./Pages/RoomList";
 import AvatarSelection from "./Pages/AvatarSelection";
+import { socket } from './socket';
 
 function App() {
     const [nickname, setNickname] = useState(""); // Stocker le pseudo globalement
@@ -11,13 +12,13 @@ function App() {
     // Gestion de la connexion
     const handleConnect = (nicknameInput) => {
         setNickname(nicknameInput); // Stocker le pseudo
-        console.log("Connected as:", nicknameInput);
+        socket.emit("login", nicknameInput);
     };
 
     // Gestion de la sélection d'avatar
     const handleAvatarSelect = (selectedAvatar) => {
         setAvatar(selectedAvatar.src); // Stocker le chemin de l'avatar sélectionné
-        console.log("Avatar selected:", selectedAvatar);
+        socket.emit("avatar", selectedAvatar.id);
     };
 
     return (
