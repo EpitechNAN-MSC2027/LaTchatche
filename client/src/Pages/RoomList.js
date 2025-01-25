@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
-    FiLogOut,
-    FiSun,
-    FiMoon,
     FiTrash2,
     FiInfo,
     FiCheckCircle,
     FiPlusCircle,
-    FiMessageSquare,
-} from "react-icons/fi"; // Import des icônes
-import { Modal } from "antd"; // Pour le modal
+} from "react-icons/fi";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import { Modal } from "antd";
 import "./RoomList.css";
+import { useNavigate } from "react-router-dom";
 import { socket } from '../socket';
+import logoutanimation from "../assets/animations/logout.lottie";
+import toggleAnimation from "../assets/animations/toggle.lottie";
+import addAnimation from "../assets/animations/add.lottie";
+import chatAnimation from '../assets/animations/chat.lottie';
+import cameleonAnimation from "../assets/animations/cameleon.lottie";
+import meufAnimation from "../assets/animations/meuf.lottie";
+import memeAnimation from "../assets/animations/meme.lottie";
+import eyeAnimation from "../assets/animations/eye.lottie";
+
+
 
 function RoomList({ nickname, avatar }) {
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -25,26 +33,45 @@ function RoomList({ nickname, avatar }) {
     const [newRoom, setNewRoom] = useState({ name: "", description: "" });
     const [currentPage, setCurrentPage] = useState(1);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const roomsPerPage = 6;
-
-    const toggleDarkMode = () => {
-        setIsDarkMode(!isDarkMode);
-        document.body.classList.toggle("dark-mode", !isDarkMode);
-    };
+    const roomsPerPage = 4;
 
     const handleLogout = () => {
         window.location.href = "/";
     };
 
     useEffect(() => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+            setIsDarkMode(true);
+            document.body.classList.add("dark-mode");
+            document.body.classList.remove("light-mode");
+        } else {
+            setIsDarkMode(false);
+            document.body.classList.add("light-mode");
+            document.body.classList.remove("dark-mode");
+        }
+
         const hour = new Date().getHours();
         if (hour < 12) setGreeting("Good Morning");
         else if (hour < 18) setGreeting("Good Afternoon");
         else setGreeting("Good Evening");
     }, []);
 
-    const handleSearchChange = (e) => setSearch(e.target.value);
+    const toggleDarkMode = () => {
+        const newMode = !isDarkMode;
+        setIsDarkMode(newMode);
+        if (newMode) {
+            document.body.classList.add("dark-mode");
+            document.body.classList.remove("light-mode");
+            localStorage.setItem("theme", "dark");
+        } else {
+            document.body.classList.add("light-mode");
+            document.body.classList.remove("dark-mode");
+            localStorage.setItem("theme", "light");
+        }
+    };
 
+    const handleSearchChange = (e) => setSearch(e.target.value);
     const handleRoomCreation = () => {
         if (!newRoom.name.trim() || !newRoom.description.trim()) {
             alert("Room name and description cannot be empty.");
@@ -67,14 +94,24 @@ function RoomList({ nickname, avatar }) {
         setIsModalOpen(false);
     };
 
+    const navigate = useNavigate();
     const handleRoomJoin = (roomName) => {
-        //alert(`You have joined the room: ${roomName}`);
         socket.emit("join-room", roomName);
-        window.location.href = 'http://localhost:5000';
+        navigate(`/chatroom`); // Redirige vers la page ChatRoom
     };
 
     const handleRoomDelete = (roomId) => {
         setRooms(rooms.filter((room) => room.id !== roomId));
+    };
+
+    const [infoModal, setInfoModal] = useState({ visible: false, description: "" });
+
+    const showRoomInfo = (roomDescription) => {
+        setInfoModal({ visible: true, description: roomDescription });
+    };
+
+    const closeInfoModal = () => {
+        setInfoModal({ visible: false, description: "" });
     };
 
     const filteredRooms = rooms.filter((room) =>
@@ -87,8 +124,63 @@ function RoomList({ nickname, avatar }) {
 
     const handlePageChange = (page) => setCurrentPage(page);
 
+    const lottieRef = useRef(null);
+    const handleToggle = () => {
+        if (lottieRef.current) {
+            lottieRef.current.play();
+        }
+        toggleDarkMode();
+    };
+
     return (
-        <div className="RoomList-container">
+        <div className={`RoomList-container ${isDarkMode ? "dark-mode" : "light-mode"}`}>
+            {/* effects */}
+            <div className="background-effects">
+                {isDarkMode
+                    ? Array.from({ length: 4 }).map((_, i) => (
+                        <div key={i} className="pulse-shape"></div>
+                    ))
+                    : Array.from({ length: 5 }).map((_, i) => (
+                        <div key={i} className="bubble"></div>
+                    ))}
+            </div>
+
+            {!isDarkMode && (
+                <DotLottieReact
+                    src={meufAnimation}
+                    autoplay
+                    loop
+                    style={{
+                        position: "absolute",
+                        bottom: "-100px",
+                        left: "-180px",
+                        width: "150px",
+                        height: "150px",
+                        pointerEvents: "none",
+                        zIndex: -1,
+                    }}
+                    className="fixed-animation bottom-left"
+                />
+            )}
+
+            {isDarkMode && (
+                <DotLottieReact
+                    src={memeAnimation}
+                    autoplay
+                    loop
+                    style={{
+                        position: "absolute",
+                        bottom: "-100px",
+                        left: "-200px",
+                        width: "120px",
+                        height: "120px",
+                        pointerEvents: "none",
+                        zIndex: -1,
+                    }}
+                    className="fixed-animation bottom-left"
+                />
+            )}
+
             {/* Header */}
             <header className="RoomList-header">
                 <div className="header-left">
@@ -104,24 +196,37 @@ function RoomList({ nickname, avatar }) {
                     </div>
                 </div>
                 <div className="header-right">
-                    <button
-                        onClick={toggleDarkMode}
-                        className="mode-toggle-button"
-                        aria-label="Toggle Theme"
-                    >
-                        {isDarkMode ? <FiSun /> : <FiMoon />}
-                    </button>
-                    <button
+                    <DotLottieReact
+                        src={toggleAnimation}
+                        autoplay
+                        loop
+                        style={{ width: 40, height: 40, cursor: "pointer" }}
+                        lottieRef={lottieRef}
+                        onMouseDown={handleToggle}
+                    />
+                    <div
                         onClick={handleLogout}
-                        className="logout-button"
-                        aria-label="Logout"
+                        style={{
+                            cursor: "pointer",
+                            width: "40px",
+                            height: "40px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        title="Logout"
                     >
-                        <FiLogOut />
-                    </button>
+                        <DotLottieReact
+                            autoplay
+                            loop
+                            src={logoutanimation}
+                            style={{ width: "100%", height: "100%" }}
+                        />
+                    </div>
                 </div>
             </header>
 
-            {/* Barre de recherche */}
+            {/* search bar */}
             <div className="search-container">
                 <input
                     type="text"
@@ -131,53 +236,54 @@ function RoomList({ nickname, avatar }) {
                     className="search-input"
                 />
                 <div className="icon-container">
-                    <FiPlusCircle
-                        className="icon"
+                    <DotLottieReact
+                        src={addAnimation}
+                        autoplay={false}
+                        loop={false}
+                        initialSegment={[0, 1]}
+                        style={{ width: 70, height: 70, cursor: "pointer" }}
                         onClick={() => setIsModalOpen(true)}
-                        title="Create Room"
                     />
-                    <FiMessageSquare
-                        className="icon"
-                        onClick={() => alert("Navigate to Chat Room")}
-                        title="Go to Chat Room"
+                    <DotLottieReact
+                        src={chatAnimation}
+                        autoplay={false}
+                        loop={false}
+                        initialSegment={[0, 1]}
+                        style={{ width: 80, height: 80, cursor: "pointer" }}
+                        onClick={handleRoomJoin}
                     />
                 </div>
             </div>
 
-            {/* Liste des salons */}
+            {/* list of room */}
             <ul className="room-list">
                 {currentRooms.map((room) => (
-                    <li key={room.id} className="room-item">
-                        <div className="room-info">
-                            <strong>{room.name}</strong>
-                            <FiInfo
-                                className="room-icon info-icon"
-                                title={room.description}
-                            />
-                        </div>
-                        <div className="room-actions">
-                            <button
-                                onClick={() => handleRoomJoin(room.name)}
-                                className="join-button"
-                                aria-label="Join Room"
-                            >
-                                <FiCheckCircle />
-                            </button>
-                            {room.createdByUser && (
-                                <button
-                                    onClick={() => handleRoomDelete(room.id)}
-                                    className="delete-button"
-                                    aria-label="Delete Room"
-                                >
-                                    <FiTrash2 />
+                    <li key={room.id} className="room-item-wrapper">
+                        <div className="room-item">
+                            <div className="room-info">
+                                <strong>{room.name}</strong>
+                                <FiInfo
+                                    className="room-icon info-icon"
+                                    title="Room Info"
+                                    onClick={() => showRoomInfo(room.description)}
+                                />
+                            </div>
+                            <div className="room-actions">
+                                <button onClick={() => handleRoomJoin(room.name)} className="join-button">
+                                    <FiCheckCircle />
                                 </button>
-                            )}
+                                {room.createdByUser && (
+                                    <button onClick={() => handleRoomDelete(room.id)} className="delete-button">
+                                        <FiTrash2 />
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     </li>
                 ))}
             </ul>
 
-            {/* Pagination */}
+            {/* Number of pages */}
             <div className="pagination">
                 {Array.from({ length: Math.ceil(filteredRooms.length / roomsPerPage) }).map((_, i) => (
                     <button
@@ -190,7 +296,7 @@ function RoomList({ nickname, avatar }) {
                 ))}
             </div>
 
-            {/* Modal pour créer un salon */}
+            {/* Modal for create a room */}
             <Modal
                 title="Create Room"
                 visible={isModalOpen}
@@ -213,6 +319,16 @@ function RoomList({ nickname, avatar }) {
                     className="modal-textarea"
                     style={{ marginTop: "10px", width: "100%" }}
                 />
+            </Modal>
+
+            {/* Modal for info */}
+            <Modal
+                title="Room Description"
+                visible={infoModal.visible}
+                onOk={closeInfoModal}
+                onCancel={closeInfoModal}
+            >
+                <p>{infoModal.description}</p>
             </Modal>
         </div>
     );

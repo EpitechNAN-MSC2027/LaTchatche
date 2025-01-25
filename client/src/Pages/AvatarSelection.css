@@ -12,7 +12,8 @@
 
 .selection-title {
     font-size: 2.5rem;
-    margin-bottom: 20px;
+    margin-top: -30px; /* Réduit l'espacement en haut */
+    margin-bottom: 5px; /* Réduit l'espacement en bas */
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -70,4 +71,25 @@
     font-size: 14px;
     font-weight: bold;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+    .avatar-selection-container {
+        padding: 10px; /* Réduit les marges */
+    }
+
+    .selection-title {
+        font-size: 1.5rem; /* Réduit la taille du titre */
+        text-align: center;
+    }
+
+    .avatar-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Réduit la taille des avatars */
+        gap: 10px; /* Réduit l'espacement entre les avatars */
+    }
+
+    .avatar-item {
+        width: 80px; /* Ajuste la taille des avatars */
+        height: 80px;
+    }
 }

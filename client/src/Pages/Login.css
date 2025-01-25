@@ -167,3 +167,37 @@
     box-shadow: 0 0 15px #c85103;
     transform: scale(1.05);
 }
+
+@media (max-width: 768px) {
+    .login-container {
+        padding: 20px;
+    }
+
+    .login-form {
+        padding: 15px; /* Moins d'espace pour les petits écrans */
+    }
+
+    .login-logo {
+        max-width: 120px; /* Diminue la taille du logo */
+    }
+
+    .login-form input,
+    .login-form button {
+        font-size: 14px; /* Réduit la taille du texte */
+    }
+}
+
+@media (max-width: 480px) {
+    .login-form {
+        padding: 10px; /* Réduit encore plus les marges */
+    }
+
+    .login-logo {
+        max-width: 100px; /* Réduit la taille du logo */
+    }
+
+    .login-form input,
+    .login-form button {
+        font-size: 12px; /* Texte encore plus petit */
+    }
+}
