@@ -6,6 +6,11 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 const mysql = require('mysql2');
 const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
+//const bodyParser = require('body-parser');
+
+//app.use(cors());
+//app.use(bodyParser.json());
+
 const connection = mysql.createConnection({
   host: 'localhost',
   user: 'irc',
@@ -34,6 +39,95 @@ function getCurrentDatetime() {
     return formattedDate;
   }
 
+async function DebugTableUser(){
+    connection.query("SELECT * FROM Users",(err,resultat) => {
+        if (err){
+            console.error('Error retrieving data:', err);
+        }
+        console.log(resultat);
+    })
+}
+
+/*
+app.get('/dataUsers', (req, res) => {
+    const sql = 'SELECT * FROM Users';
+    
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err.stack);
+            return res.status(500).send('Failed to fetch data');
+        }
+        res.json(results);
+    });
+});
+*/
+
+async function DebugTableChannels(){
+    connection.query("SELECT * FROM Channels",(err,resultat) => {
+        if (err){
+            console.error('Error retrieving data:', err);
+        }
+        console.log(resultat);
+    })
+}
+/*
+app.get('/dataChannels', (req, res) => {
+    const sql = 'SELECT * FROM Channels';
+    
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err.stack);
+            return res.status(500).send('Failed to fetch data');
+        }
+        res.json(results);
+    });
+});
+*/
+
+async function DebugTableMessages(){
+    connection.query("SELECT * FROM Messages",(err,resultat) => {
+        if (err){
+            console.error('Error retrieving data:', err);
+        }
+        console.log(resultat);
+    })
+}
+/*
+app.get('/dataMessages', (req, res) => {
+    const sql = 'SELECT * FROM Messages';
+    
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err.stack);
+            return res.status(500).send('Failed to fetch data');
+        }
+        res.json(results);
+    });
+});
+*/
+
+async function DebugTablePrivateMessages(){
+    connection.query("SELECT * FROM PrivateMessages",(err,resultat) => {
+        if (err){
+            console.error('Error retrieving data:', err);
+        }
+        console.log(resultat);
+    })
+}
+/*
+app.get('/dataPrivateMessages', (req, res) => {
+    const sql = 'SELECT * FROM PrivateMessages';
+    
+    connection.query(sql, (err, results) => {
+        if (err) {
+            console.error('Error fetching data:', err.stack);
+            return res.status(500).send('Failed to fetch data');
+        }
+        res.json(results);
+    });
+});
+*/
+
 async function InsertMessage(valeur) {
     connection.query("INSERT INTO Messages (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
         if (err) {
@@ -42,7 +136,22 @@ async function InsertMessage(valeur) {
         console.log('Data inserted successfully!');
     });
 }
-
+/*
+app.post('/addMessage', async (req, res) => {
+    const { nickname,channelName,dateMessage,texteMessage } = req.body;
+  
+    const sql = "INSERT INTO Messages (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)";
+    const values = [nickname,channelName,dateMessage,texteMessage];
+  
+    connection.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json('Failed to insert message');
+        }
+        res.status(200).json('Message inserted successfully!');
+    });
+  });
+*/
 async function InsertPrivateMessage(valeur) {
     connection.query("INSERT INTO PrivateMessages (nickname,privateReceiver,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
         if (err) {
@@ -51,7 +160,22 @@ async function InsertPrivateMessage(valeur) {
         console.log('Data inserted successfully!');
     });
 }
-
+/*
+app.post('/addPrivateMessage', async (req, res) => {
+    const { nickname,privateReceiver,dateMessage,texteMessage } = req.body;
+  
+    const sql = "INSERT INTO PrivateMessages (nickname,privateReceiver,dateMessage,texteMessage) VALUES (?, ?, ?, ?)";
+    const values = [nickname,privateReceiver,dateMessage,texteMessage];
+  
+    connection.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json('Failed to insert message');
+        }
+        res.status(200).json('Message inserted successfully!');
+    });
+  });
+*/
 async function InsertUser(valeur) {
     connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
@@ -61,22 +185,81 @@ async function InsertUser(valeur) {
         }
     });
 }
+/*
+app.post('/addUser', async (req, res) => {
+    const { nickname, iconID } = req.body;
+  
+    const sql = "INSERT INTO Users (nickname, iconID) VALUES (?, ?)";
+    const values = [nickname, iconID];
+  
+    connection.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json('Failed to insert user');
+        }
+        res.status(200).json('User inserted successfully!');
+    });
+  });
+*/
 
 async function UpdateUser(valeur) {
-    connection.query("UPDATE Users SET nickname = ? WHERE nickname = ?", valeur, (err, result) => {
+    connection.query("UPDATE Users SET nickname = ?  WHERE nickname = ?", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
         console.log('Data modified successfully!');
     });
 }
+/*
+app.put('/updateUser/:nickname', async (req, res) => {
+    const {nickname} = req.params;
+    const {newnickname} = req.body;
 
+    const sql = "UPDATE Users SET nickname = ?  WHERE nickname = ?";
+    const values = [newnickname, nickname];
+
+    try {
+        const [results] = await connection.promise().query(sql, values);
+        if (results.affectedRows === 0) {
+            return res.status(404).send('User non trouvé.');
+        }
+        res.status(200).send('User mise à jour avec succès !');
+    } catch (err) {
+        console.error('Erreur lors de la mise à jour du User', err);
+        res.status(500).send('Erreur lors de la mise à jour de du User' + err.message);
+    }
+});
+*/
 async function InsertChannel(valeur) {
-    connection.query("INSERT IGNORE INTO Channels (channelName) VALUES (?)", valeur, (err, result) => {
+    connection.query("INSERT INTO Channels (channelName, channelDescription) VALUES (?, ?) ON DUPLICATE KEY UPDATE isAlive = TRUE", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
         console.log('Data inserted successfully!');
+    });
+}
+/*
+app.post('/addChannel', async (req, res) => {
+    const {channelName, channelDescription} = req.body;
+  
+    const sql = "INSERT INTO Channels (channelName, channelDescription) VALUES (?, ?)";
+    const values = [channelName, channelDescription];
+  
+    connection.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json('Failed to insert channel');
+        }
+        res.status(200).json('Channel inserted successfully!');
+    });
+  });
+*/
+async function KillChannel(valeur) {
+    connection.query("UPDATE Channels SET isAlive = FALSE WHERE channelName = ?", valeur, (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+        }
+        console.log('Data updated successfully!');
     });
 }
 
@@ -88,7 +271,23 @@ async function InsertPair(valeur) {
         console.log('Data inserted successfully!');
     });
 }
-
+/*
+app.post('/addPair', async (req, res) => {
+    const { nickname, channelName } = req.body;
+  
+    const sql = "INSERT INTO Entreprises (nickname, channelName) VALUES (?, ?)";
+    const values = [nickname, channelName];
+  
+    connection.query(sql, values, (err, result) => {
+        if (err) {
+            console.error('Error inserting data:', err);
+            return res.status(500).json('Failed to insert pair');
+        }
+        res.status(200).json('Pair inserted successfully!');
+    });
+  });
+  
+*/
 async function DeletePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (nickname = ? AND channelName = ?)", valeur, (err, result) => {
         if (err) {
@@ -130,18 +329,22 @@ let x = 1;
 //List of all users
 let users = [];
 //List of all rooms
-let rooms = ["General"];
+let rooms = ["general"];
 
 io.on('connection', (socket) => { // When a user connects
 
-    let currentRoom = "General";
+    let currentRoom = "general";
     //User is connected to connectedRooms
     let connectedRooms = [currentRoom];
     //currentRoom is the room where the user is writing a message
 
     let name = "user" + x;
     x++;
-    InsertChannel([currentRoom]);
+    DebugTableUser();
+    DebugTableChannels();
+    DebugTableMessages();
+    DebugTablePrivateMessages();
+    InsertChannel([currentRoom, "Default chat"]);
     InsertUser([name, 1]);
     users.push([name, socket.id]);
 
@@ -217,12 +420,20 @@ io.on('connection', (socket) => { // When a user connects
                     break;
                 //create
                 case "/create":
-                    let room = msg.split(" ")[1];
-                    InsertChannel([room]);
-                    rooms.push(room);
-                    socket.join(room);
-                    io.emit('chat message', "New room : " + room + " has been created by " + name);
-                    break;
+                    let room = msg.split(" ")[1].toLowerCase();
+                    let description = msg.split(" ").slice(2).join(" ");
+
+                    if (rooms.includes(room)){
+                        socket.emit('chat message', room + " already exists.");
+                        break;
+                    }
+                    else{
+                        InsertChannel([room, description]);
+                        rooms.push(room);
+                        socket.join(room);
+                        io.emit('chat message', "New room : " + room + " has been created by " + name);
+                        break;
+                    }
                 //join
                 case "/join":
                     let roomToJoin = msg.split(" ")[1];
@@ -259,6 +470,7 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit(name + ": Can't delete the General channel");
                     }else {
                         DeletechannelNamePair([roomToDelete]);
+                        KillChannel([roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
                         io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
                         let socketsInRoom = await io.in(roomToDelete).fetchSockets();
