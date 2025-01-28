@@ -7,12 +7,12 @@ const { Server } = require("socket.io");
 //Import dotenv & load .env
 const dotenv = require('dotenv');
 dotenv.config();
-const io = new Server(server, {
+const io = new Server(server /*, {
     cors: {
         origin: [ process.env.IP, "http://localhost:3000"],
         methods: ["GET", "POST"],
     },
-});
+}*/);
 const mysql = require('mysql2');
 const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
 
@@ -361,6 +361,12 @@ io.on('connection', (socket) => { // When a user connects
     InsertChannel([currentRoom, "Default chat"]);
     InsertUser([name, 1]);
     users.push([name, socket.id]);
+
+    socket.join(currentRoom); // Join default room
+    InsertPair([name, currentRoom]);
+    console.log(`${name} connected`);
+    io.to(currentRoom).emit('chat message', `${name} joined the room.`);
+
 /*
     socket.on('login', (nickname) => {
         name = nickname;
