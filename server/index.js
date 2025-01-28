@@ -339,7 +339,7 @@ async function DeletechannelNamePair(valeur) {
 async function DeleteRoom(roomToDelete, localname) {
     DeletechannelNamePair([roomToDelete]);
     KillChannel([roomToDelete]);
-    io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + localname);
+    io.to(roomToDelete).emit('chat message', "Room : " + roomToDelete + " has been deleted by " + localname + ".");
     let socketsInRoom = await io.in(roomToDelete).fetchSockets();
     socketsInRoom.forEach((socket) => {
         socket.leave(roomToDelete);
@@ -409,7 +409,7 @@ io.on('connection', (socket) => { // When a user connects
     });
 
     //Lists of all commands
-    const commandlist = ['/users', '/join', '/nick', '/quit', '/list', '/dadjoke', '/delete', '/create', '/msg', '/rooms'];
+    const commandlist = ['/users', '/join', '/nick', '/quit', '/list', '/dadjoke', '/delete', '/create', '/msg', '/rooms', '/swap'];
 
     // autocomplete requests
     socket.on("autocomplete_request", (data) => {
@@ -427,21 +427,39 @@ io.on('connection', (socket) => { // When a user connects
         if (msg.startsWith("/")) {
             let cmd = msg.split(" ")[0];
             switch (cmd) {
+                case "/swap":
+                    const swapRoom = msg.split(" ")[1];
+                    connection.query("SELECT channelName FROM Pairs WHERE channelName = ? AND nickname = ?", [swapRoom, name], (err,resultat)=>{
+                        if (resultat.length == 0) {
+                            socket.emit('chat message', "You are not connected to : " + swapRoom + ".");
+                        }
+                        else{
+                            currentRoom = swapRoom;
+                            socket.emit('chat message', "Now writing in : " + swapRoom + ".");
+                        }
+                      })
+                    break;
                 //List all users
                 case "/users":
                     connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [currentRoom], (err,resultat)=>{
                         if (err) {
-                            console.error("Error executing query:", err.message);
+                            console.error("Error executing query :", err.message);
                           }
                           const allNicknames = resultat.map(item => item.nickname).join(', ');
-                          socket.emit('chat message', "list of users : " + allNicknames);
+                          socket.emit('chat message', "List of users : " + allNicknames  + ".");
                       })
                     break;
                 // Change name
                 case "/nick":
                     const newName = msg.split(" ")[1];
+
                     if (!newName) {
                         socket.emit('chat message', "Please provide a valid nickname.");
+                        break;
+                    }
+
+                    if (msg.split(" ")[2] != ""){
+                        socket.emit('chat message', "Spaces are not allowed in nicknames.");
                         break;
                     }
                     
@@ -474,7 +492,7 @@ io.on('connection', (socket) => { // When a user connects
                         else{
                             InsertChannel([room, description]);
                             socket.join(room);
-                            io.emit('chat message', "New room : " + room + " has been created by " + name);
+                            io.emit('chat message', "New room : " + room + " has been created by " + name + ".");
                         }
                     });
                     break;
@@ -484,19 +502,21 @@ io.on('connection', (socket) => { // When a user connects
                     let roomToJoin = msg.split(" ")[1].toLowerCase();
                     connection.query("SELECT channelName FROM Pairs WHERE channelName = ? AND nickname = ? LIMIT 1", [roomToJoin, name], (err, results) => {
                         if (results.length > 0){                            
-                            socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
+                            socket.emit('chat message',"You are already connected to " + roomToJoin + ".");
                             currentRoom = roomToJoin;
+                            socket.emit('chat message', "Now writing in : " + roomToJoin + ".");
                         }
                         else{
                             connection.query("SELECT channelName FROM Channels WHERE channelName = ? AND isAlive = TRUE LIMIT 1", [roomToJoin], (err, results) => {
                                 if (results.length == 0) {
-                                    socket.emit('chat message', name + ": Room not found");
+                                    socket.emit('chat message',"Room not found.");
                                     
                                 } else {
                                     socket.join(roomToJoin);
                                     currentRoom = roomToJoin;
                                     InsertPair([name,currentRoom])
-                                    io.to(roomToJoin).emit('chat message', name + " joined the room");
+                                    io.to(roomToJoin).emit('chat message', name + " joined " + roomToJoin + ".");
+                                    socket.emit('chat message', "Now writing in : " + roomToJoin + ".");
                                 }
                             });
                         }
@@ -507,7 +527,7 @@ io.on('connection', (socket) => { // When a user connects
                 case "/list":
                     connection.query("SELECT channelName FROM Channels WHERE isAlive = TRUE", (err, results) => {
                         const allRooms = results.map(item => item.channelName).join(', ');
-                        socket.emit('chat message', "list of all rooms : " + allRooms);
+                        socket.emit('chat message', "List of all rooms : " + allRooms + ".");
                     });
                     break;
                 //delete room
@@ -515,12 +535,12 @@ io.on('connection', (socket) => { // When a user connects
                     let roomToDelete = msg.split(" ")[1].toLowerCase();
 
                     if (roomToDelete == "general") {
-                        socket.emit('chat message', name + ": Can't delete the General channel");
+                        socket.emit('chat message',"You can't delete the general channel.");
                     }
                     else{
                         connection.query("SELECT channelName FROM Channels WHERE channelName = ? AND isAlive = TRUE LIMIT 1", [roomToDelete], (err, results) => {
                             if (results.length == 0) {
-                                socket.emit('chat message', name + ": Room not found");
+                                socket.emit('chat message',"Room not found.");
                             } 
                             else{
                                 DeleteRoom(roomToDelete, name);
@@ -558,7 +578,7 @@ io.on('connection', (socket) => { // When a user connects
                     let roomToQuit = msg.split(" ")[1].toLowerCase();
                     //Check if user is connected to the room
                     if (roomToQuit == "general") {
-                        socket.emit('chat message', "Can't quit the general channel");
+                        socket.emit('chat message', "Can't quit the general channel.");
                     }
                     else{
                         connection.query("SELECT channelName FROM Pairs WHERE channelName = ? AND nickname = ? LIMIT 1", [roomToQuit, name], (err, results) => {
@@ -568,9 +588,9 @@ io.on('connection', (socket) => { // When a user connects
                                 socket.join("general");
                                 currentRoom = "general";
                                 InsertPair([name, currentRoom]);
-                                socket.emit('chat message', "You have left the room " + roomToQuit);
+                                socket.emit('chat message', "You have left the room " + roomToQuit + ".");
                             }else{
-                                socket.emit('chat message', "You are not connected to this room");
+                                socket.emit('chat message', "You are not connected to this room.");
                             }
                         });
                     }
@@ -585,7 +605,7 @@ io.on('connection', (socket) => { // When a user connects
                             }
                         });
                         const data = await response.text();
-                        io.to(currentRoom).emit('chat message', name + " ask for a Dad joke: " + data);
+                        io.to(currentRoom).emit('chat message', "Did you ask for a Dad joke ? " + data);
                     } catch (error) {
                         console.log({ error: 'Error fetching API data' });
                     }
@@ -594,15 +614,15 @@ io.on('connection', (socket) => { // When a user connects
                 case "/rooms":
                     connection.query("SELECT channelName FROM Pairs WHERE nickname = ?", [name], (err, results) => {
                         const allConnectedRooms = results.map(item => item.channelName).join(', ');
-                        socket.emit('chat message', "list of connected rooms : " + allConnectedRooms);
+                        socket.emit('chat message', "List of connected rooms : " + allConnectedRooms + ".");
                     });
                     break;
                 default:
-                    socket.emit('chat message', name + ": Command not found");
+                    socket.emit('chat message',"Command not found.");
                     break;
             }
         } else {
-            io.to(currentRoom).emit('chat message', name + ": " + msg);
+            io.to(currentRoom).emit('chat message', name + " in " + currentRoom + " : " + msg);
             InsertMessage([name,currentRoom,getCurrentDatetime(),msg]);
         }
 
