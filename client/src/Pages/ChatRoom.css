@@ -1,0 +1,178 @@
+.chat-room-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 1fr;
+    height: 100vh; /* Maintenir toute la hauteur de la fenêtre */
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Empêcher tout débordement */
+}
+
+.sidebar-left,
+.sidebar-right {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto; /* Permettre le défilement si nécessaire */
+}
+
+.sidebar-left ul,
+.sidebar-right ul {
+    list-style: none;
+    padding: 0;
+}
+
+.room-item,
+.user-item {
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.room-item:hover,
+.user-item:hover {
+    background-color: #f0f0f0;
+}
+
+.room-item.active-room {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+.chat-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden; /* Éviter le débordement */
+}
+
+.chat-header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #ccc;
+}
+
+.chat-messages {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1; /* Prendre tout l'espace disponible */
+    overflow-y: auto; /* Ajoute une barre de défilement si nécessaire */
+    max-height: calc(100vh - 140px); /* Ajuster en fonction du header et de l'input */
+}
+
+.message {
+    max-width: 70%;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Permettre la rupture des mots longs */
+}
+
+.message.sent {
+    align-self: flex-end;
+    background-color: #4CAF50;
+    color: white;
+}
+
+.message.received {
+    align-self: flex-start;
+    background-color: #f0f0f0;
+    color: black;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #ccc;
+    background-color: white;
+    position: sticky;
+    bottom: 0; /* Toujours visible au bas de la fenêtre */
+    z-index: 10; /* Assurer qu'elle est toujours au-dessus des messages */
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.chat-input button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.chat-input button:hover {
+    background-color: #45a049;
+}
+
+.user-item {
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.user-item:hover {
+    background-color: #f0f0f0;
+}
+
+.user-item.active-user {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: bold;
+}
+
+.private-tag {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #FF5722;
+    margin-right: 5px;
+}
+
+.header-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.btn-back,
+.btn-leave {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back {
+    background-color: #4caf50;
+    color: white;
+}
+
+.btn-leave {
+    background-color: #f44336;
+    color: white;
+}
+
+.btn-back:hover {
+    background-color: #45a049;
+}
+
+.btn-leave:hover {
+    background-color: #d32f2f;
+}

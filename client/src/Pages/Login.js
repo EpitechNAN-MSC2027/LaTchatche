@@ -5,18 +5,17 @@ import logo from "../assets/logo.png";
 
 function Login({ onConnect }) {
     const [nickname, setNickname] = useState("");
-    const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
     const [particles, setParticles] = useState([]);
     const navigate = useNavigate();
 
     const handleLogin = () => {
-        if (!nickname.trim() || !password.trim()) {
+        if (!nickname.trim()) {
             setError(true);
             setTimeout(() => setError(false), 3000);
             return;
         }
-        onConnect(nickname, password);
+        onConnect(nickname);
         navigate("/avatar-selection");
     };
 
@@ -39,7 +38,6 @@ function Login({ onConnect }) {
         generateParticles();
     }, []);
 
-    // Focus automatique sur le champ de pseudo au chargement
     useEffect(() => {
         const inputField = document.querySelector(".login-input");
         if (inputField) {
@@ -84,15 +82,6 @@ function Login({ onConnect }) {
                         className="login-input"
                         aria-label="Nickname input"
                     />
-                    <input
-                        type="password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        placeholder="Enter your password"
-                        className="login-input"
-                        aria-label="Password input"
-                        style={{ marginTop: "10px" }}
-                    />
                     <button
                         onClick={handleLogin}
                         className="login-button"
@@ -104,7 +93,7 @@ function Login({ onConnect }) {
                 </div>
                 {error && (
                     <p className="login-error">
-                        Please enter a valid nickname and password
+                        Please enter a valid nickname
                     </p>
                 )}
             </div>
