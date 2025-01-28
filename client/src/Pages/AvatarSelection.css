@@ -12,8 +12,8 @@
 
 .selection-title {
     font-size: 2.5rem;
-    margin-top: -30px; /* Réduit l'espacement en haut */
-    margin-bottom: 5px; /* Réduit l'espacement en bas */
+    margin-top: -30px;
+    margin-bottom: 5px;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
@@ -75,21 +75,21 @@
 
 @media (max-width: 768px) {
     .avatar-selection-container {
-        padding: 10px; /* Réduit les marges */
+        padding: 10px;
     }
 
     .selection-title {
-        font-size: 1.5rem; /* Réduit la taille du titre */
+        font-size: 1.5rem;
         text-align: center;
     }
 
     .avatar-grid {
-        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); /* Réduit la taille des avatars */
-        gap: 10px; /* Réduit l'espacement entre les avatars */
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        gap: 10px;
     }
 
     .avatar-item {
-        width: 80px; /* Ajuste la taille des avatars */
+        width: 80px;
         height: 80px;
     }
 }

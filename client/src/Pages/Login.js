@@ -19,7 +19,7 @@ function Login({ onConnect }) {
         navigate("/avatar-selection");
     };
 
-    // Générer les particules
+    // Généreation des particules
     useEffect(() => {
         const generateParticles = () => {
             const newParticles = [];
@@ -47,7 +47,7 @@ function Login({ onConnect }) {
 
     return (
         <div className="login-container">
-            {/* Particules dynamiques */}
+            {/* Particules */}
             <div className="particles-container">
                 {particles.map((particle) => (
                     <div
@@ -65,7 +65,7 @@ function Login({ onConnect }) {
                 ))}
             </div>
 
-            {/* Boîte de connexion */}
+            {/* Login */}
             <div className="login-box">
                 <img
                     src={logo}

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AvatarSelection.css";
 
-// Import des avatars
 import avatar1 from "../assets/Pilllz_download_pack/myPilllz01.svg";
 import avatar2 from "../assets/Pilllz_download_pack/myPilllz02.svg";
 import avatar3 from "../assets/Pilllz_download_pack/myPilllz04.svg";
@@ -61,11 +60,10 @@ function AvatarSelection({ onAvatarSelect }) {
 
     const handleAvatarClick = (avatar) => {
         if (selectedAvatar === avatar.id) {
-            // Si on clique à nouveau sur l'avatar sélectionné, confirmer
             onAvatarSelect(avatar);
-            navigate("/rooms"); // Rediriger vers la liste des salons
+            navigate("/rooms");
         } else {
-            setSelectedAvatar(avatar.id); // Sélectionner l'avatar
+            setSelectedAvatar(avatar.id);
         }
     };
 
@@ -82,7 +80,6 @@ function AvatarSelection({ onAvatarSelect }) {
                         onClick={() => handleAvatarClick(avatar)}
                     >
                         <img src={avatar.src} alt={`Avatar ${avatar.id}`} />
-                        {/* Affichage du checkmark si sélectionné */}
                         {selectedAvatar === avatar.id && (
                             <div className="checkmark">✔️</div>
                         )}

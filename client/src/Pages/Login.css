@@ -1,4 +1,3 @@
-/* Conteneur principal */
 .login-container {
     display: flex;
     flex-direction: column;
@@ -38,8 +37,8 @@
     }
 }
 
-/* Boîte de connexion */
-/* Animation pour le contour dégradé */
+
+/* Animation login */
 @keyframes gradientBorder {
     0% {
         border-image-source: linear-gradient(90deg, #1c1c1c, #c85103, #ffd700);
@@ -52,7 +51,6 @@
     }
 }
 
-/* Style pour la boîte de connexion avec contour animé */
 .login-box {
     text-align: center;
     background-color: white;
@@ -72,7 +70,7 @@
     transform: scale(1.02);
 }
 
-/* Logo */
+
 .login-logo {
     margin-bottom: 20px;
     width: 100px;
@@ -83,17 +81,17 @@
     transform: rotate(10deg);
 }
 
-/* Conteneur input + bouton */
+
 .input-button-container {
     display: flex;
-    flex-direction: column; /* Alignement vertical */
+    flex-direction: column;
     gap: 15px;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
 }
 
-/* Champ de saisie */
+
 .login-input {
     padding: 12px;
     font-size: 16px;
@@ -109,7 +107,7 @@
     transform: scale(1.05);
 }
 
-/* Bouton de connexion */
+
 .login-button {
     padding: 12px 25px;
     font-size: 16px;
@@ -128,7 +126,6 @@
     transform: translateY(-3px);
 }
 
-/* Message d'erreur */
 .login-error {
     color: red;
     margin-top: 15px;
@@ -152,7 +149,6 @@
     }
 }
 
-/* Champ mot de passe */
 .password-input {
     padding: 12px;
     font-size: 16px;
@@ -174,30 +170,30 @@
     }
 
     .login-form {
-        padding: 15px; /* Moins d'espace pour les petits écrans */
+        padding: 15px;
     }
 
     .login-logo {
-        max-width: 120px; /* Diminue la taille du logo */
+        max-width: 120px;
     }
 
     .login-form input,
     .login-form button {
-        font-size: 14px; /* Réduit la taille du texte */
+        font-size: 14px;
     }
 }
 
 @media (max-width: 480px) {
     .login-form {
-        padding: 10px; /* Réduit encore plus les marges */
+        padding: 10px;
     }
 
     .login-logo {
-        max-width: 100px; /* Réduit la taille du logo */
+        max-width: 100px;
     }
 
     .login-form input,
     .login-form button {
-        font-size: 12px; /* Texte encore plus petit */
+        font-size: 12px;
     }
 }
