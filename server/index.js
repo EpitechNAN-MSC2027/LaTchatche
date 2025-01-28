@@ -336,19 +336,29 @@ async function DeletechannelNamePair(valeur) {
     });
 }
 
+async function DeleteRoom(roomToDelete, localname) {
+    DeletechannelNamePair([roomToDelete]);
+    KillChannel([roomToDelete]);
+    io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + localname);
+    let socketsInRoom = await io.in(roomToDelete).fetchSockets();
+    socketsInRoom.forEach((socket) => {
+        socket.leave(roomToDelete);
+        socket.join("general");
+        currentRoom = "general";
+    });
+    io.to("general").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the General room.');                            
+}
+
 //X for nameX
 let x = 1;
 //List of all users
 let users = [];
 //List of all rooms
-let rooms = ["general"];
 
 io.on('connection', (socket) => { // When a user connects
 
     let currentRoom = "general";
 
-    //User is connected to connectedRooms
-    let connectedRooms = [currentRoom];
     //currentRoom is the room where the user is writing a message
     //let name;
 
@@ -393,9 +403,9 @@ io.on('connection', (socket) => { // When a user connects
         users = users.filter(item => item !== name);
 
         DeletenicknamePair([name]);
-        connectedRooms.forEach(room => {
+        /*connectedRooms.forEach(room => {
             io.to(room).emit('chat message', `${name} left the room.`);
-        })
+        })*/
     });
 
     //Lists of all commands
@@ -457,65 +467,69 @@ io.on('connection', (socket) => { // When a user connects
                     let room = msg.split(" ")[1].toLowerCase();
                     let description = msg.split(" ").slice(2).join(" ");
 
-                    if (rooms.includes(room)){
-                        socket.emit('chat message', room + " already exists.");
-                        break;
-                    }
-                    else{
-                        InsertChannel([room, description]);
-                        rooms.push(room);
-                        socket.join(room);
-                        io.emit('chat message', "New room : " + room + " has been created by " + name);
-                        break;
-                    }
+                    connection.query("SELECT channelName FROM Channels WHERE channelName = ? AND isAlive = TRUE LIMIT 1", [room], (err, results) => {
+                        if (results.length > 0){
+                            socket.emit('chat message', room + " already exists.");
+                        }
+                        else{
+                            InsertChannel([room, description]);
+                            socket.join(room);
+                            io.emit('chat message', "New room : " + room + " has been created by " + name);
+                        }
+                    });
+                    break;
+
                 //join
                 case "/join":
-                    let roomToJoin = msg.split(" ")[1];
-                    if (connectedRooms.includes(roomToJoin)){
-                        socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
-                        currentRoom = roomToJoin;
-
-                    }else{
-                        if (!rooms.includes(roomToJoin)) {
-                            socket.emit('chat message', name + ": Room not found");
-                            break;
-                        } else {
-                            socket.join(roomToJoin);
-                            connectedRooms.push(roomToJoin);
+                    let roomToJoin = msg.split(" ")[1].toLowerCase();
+                    connection.query("SELECT channelName FROM Pairs WHERE channelName = ? AND nickname = ? LIMIT 1", [roomToJoin, name], (err, results) => {
+                        if (results.length > 0){                            
+                            socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
                             currentRoom = roomToJoin;
-                            InsertPair([name,currentRoom])
-                            io.to(roomToJoin).emit('chat message', name + " joined the room");
                         }
-                    }
-
+                        else{
+                            connection.query("SELECT channelName FROM Channels WHERE channelName = ? AND isAlive = TRUE LIMIT 1", [roomToJoin], (err, results) => {
+                                if (results.length == 0) {
+                                    socket.emit('chat message', name + ": Room not found");
+                                    
+                                } else {
+                                    socket.join(roomToJoin);
+                                    currentRoom = roomToJoin;
+                                    InsertPair([name,currentRoom])
+                                    io.to(roomToJoin).emit('chat message', name + " joined the room");
+                                }
+                            });
+                        }
+                    });
                     break;
+
                 //list rooms
                 case "/list":
-                    socket.emit('chat message', "list of rooms : " + rooms);
+                    connection.query("SELECT channelName FROM Channels WHERE isAlive = TRUE", (err, results) => {
+                        const allRooms = results.map(item => item.channelName).join(', ');
+                        socket.emit('chat message', "list of all rooms : " + allRooms);
+                    });
                     break;
                 //delete room
                 case "/delete":
-                    let roomToDelete = msg.split(" ")[1];
-                    if (!rooms.includes(roomToDelete)) {
-                        socket.emit('chat message', name + ": Room not found");
-                        break;
-                    } 
-                    else if (roomToDelete == "General") {
-                        socket.emit(name + ": Can't delete the General channel");
-                    }else {
-                        DeletechannelNamePair([roomToDelete]);
-                        KillChannel([roomToDelete]);
-                        rooms = rooms.filter(item => item !== roomToDelete);
-                        io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
-                        let socketsInRoom = await io.in(roomToDelete).fetchSockets();
-                        socketsInRoom.forEach((socket) => {
-                            socket.leave(roomToDelete);
-                            socket.join("General");
-                            currentRoom = "General";
-                        });
-                        io.to("General").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the General room.');
-                        break;
+                    let roomToDelete = msg.split(" ")[1].toLowerCase();
+
+                    if (roomToDelete == "general") {
+                        socket.emit('chat message', name + ": Can't delete the General channel");
                     }
+                    else{
+                        connection.query("SELECT channelName FROM Channels WHERE channelName = ? AND isAlive = TRUE LIMIT 1", [roomToDelete], (err, results) => {
+                            if (results.length == 0) {
+                                socket.emit('chat message', name + ": Room not found");
+                            } 
+                            else{
+                                DeleteRoom(roomToDelete, name);
+                            }
+                        });
+                    }
+
+                    break;
+
                 //Private msg
                 case "/msg":
                     let userToMsg = msg.split(" ")[1];
@@ -541,19 +555,24 @@ io.on('connection', (socket) => { // When a user connects
                 //Quit room
                 case "/quit":
                     //arg
-                    let roomToQuit = msg.split(" ")[1];
+                    let roomToQuit = msg.split(" ")[1].toLowerCase();
                     //Check if user is connected to the room
-                    if (roomToQuit in connectedRooms){
-                        //leave room, join default room, remove from connectedRooms
-                        socket.leave(roomToQuit);
-                        DeletePair([name, roomToQuit]);
-                        socket.join("General");
-                        currentRoom = "General";
-                        let roomIndex = connectedRooms.indexOf(roomToQuit);
-                        connectedRooms.splice(roomindex, 1);
-                        socket.emit('chat message', "You have left the room " + roomToQuit);
-                    }else{
-                        socket.emit('chat message', "You are not connected to this room");
+                    if (roomToQuit == "general") {
+                        socket.emit('chat message', "Can't quit the general channel");
+                    }
+                    else{
+                        connection.query("SELECT channelName FROM Pairs WHERE channelName = ? AND nickname = ? LIMIT 1", [roomToQuit, name], (err, results) => {
+                            if (results.length > 0){ 
+                                socket.leave(roomToQuit);
+                                DeletePair([name, roomToQuit]);
+                                socket.join("general");
+                                currentRoom = "general";
+                                InsertPair([name, currentRoom]);
+                                socket.emit('chat message', "You have left the room " + roomToQuit);
+                            }else{
+                                socket.emit('chat message', "You are not connected to this room");
+                            }
+                        });
                     }
 
                     break;
@@ -573,7 +592,10 @@ io.on('connection', (socket) => { // When a user connects
                     break;
                 //List all rooms connected
                 case "/rooms":
-                    socket.emit('chat message', "list of rooms : " + connectedRooms);
+                    connection.query("SELECT channelName FROM Pairs WHERE nickname = ?", [name], (err, results) => {
+                        const allConnectedRooms = results.map(item => item.channelName).join(', ');
+                        socket.emit('chat message', "list of connected rooms : " + allConnectedRooms);
+                    });
                     break;
                 default:
                     socket.emit('chat message', name + ": Command not found");
