@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatRoom.css";
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
+import lamarAnimation from "../assets/animations/lamar.lottie";
 
 function ChatRoom({ nickname }) {
     const navigate = useNavigate();
 
-    // Charger les rooms et messages depuis localStorage ou initialiser
     const [rooms, setRooms] = useState(() => {
         const savedRooms = localStorage.getItem("chatRooms");
         return savedRooms ? JSON.parse(savedRooms) : ["General", "TechTalk", "Random"];
@@ -20,7 +21,6 @@ function ChatRoom({ nickname }) {
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
 
-    // Sauvegarder les rooms et messages dans localStorage à chaque mise à jour
     useEffect(() => {
         localStorage.setItem("chatRooms", JSON.stringify(rooms));
     }, [rooms]);
@@ -67,7 +67,6 @@ function ChatRoom({ nickname }) {
     };
 
     const handleLeaveRoom = () => {
-        // Supprimer la room et ses messages
         const updatedRooms = rooms.filter((room) => room !== currentRoom);
         const updatedMessages = messages.filter((msg) => msg.room !== currentRoom);
 
@@ -76,7 +75,7 @@ function ChatRoom({ nickname }) {
         localStorage.setItem("chatRooms", JSON.stringify(updatedRooms));
         localStorage.setItem("chatMessages", JSON.stringify(updatedMessages));
 
-        setCurrentRoom(null); // Désactiver la room actuelle
+        setCurrentRoom(null);
         navigate("/rooms");
     };
 
@@ -88,10 +87,9 @@ function ChatRoom({ nickname }) {
         if (!rooms.includes(room)) {
             const updatedRooms = [...rooms, room];
             setRooms(updatedRooms);
-            localStorage.setItem("chatRooms", JSON.stringify(updatedRooms)); // Sauvegarder la nouvelle room
+            localStorage.setItem("chatRooms", JSON.stringify(updatedRooms));
         }
 
-        // Sélectionner la room jointe et naviguer vers le chat
         setCurrentRoom(room);
         navigate("/chatroom");
     };
@@ -108,14 +106,15 @@ function ChatRoom({ nickname }) {
 
     return (
         <div className="chat-room-container">
-            {/* Liste des rooms */}
-            <div className="sidebar-left">
+            {/* Sidebar gauche avec la liste des rooms */}
+            <div className="chat-sidebar-left">
                 <h3>Rooms</h3>
+                <div className="room-title">{currentRoom}</div>
                 <ul>
                     {rooms.map((room) => (
                         <li
                             key={room}
-                            className={`room-item ${room === currentRoom ? "active-room" : ""}`}
+                            className={`chat-room-item ${room === currentRoom ? "active-chat-room" : ""}`}
                             onClick={() => handleRoomChange(room)}
                         >
                             {room}
@@ -124,31 +123,34 @@ function ChatRoom({ nickname }) {
                 </ul>
             </div>
 
-            {/* Zone principale de chat */}
+            <div className="chat-animation">
+                <DotLottieReact
+                    src={lamarAnimation}
+                    autoplay
+                    loop
+                    style={{ width: 150, height: 150 }}
+                />
+            </div>
+
+            {/* Zone principale du chat */}
             <div className="chat-main">
                 <header className="chat-header">
-                    <h2>{`${currentRoom ? currentRoom + " Chat Room" : "No Room Selected"}`}</h2>
-                    <p>Logged in as: <strong>{nickname}</strong></p>
-                    <div className="header-buttons">
-                        <button onClick={handleBackToRooms} className="btn-back">Back to Rooms</button>
-                        {currentRoom && (
-                            <button onClick={handleLeaveRoom} className="btn-leave">Leave Room</button>
-                        )}
+                    <div className="chat-header-content">
+                        <div className="user-initial">{nickname.charAt(0).toUpperCase()}</div>
+                    </div>
+                    <div className="chat-header-buttons">
+                        <button onClick={handleBackToRooms} className="chat-btn-back">
+                            Back to Rooms
+                        </button>
+                        <button onClick={handleLeaveRoom} className="chat-btn-leave">
+                            Leave Room
+                        </button>
                     </div>
                 </header>
                 <div className="chat-messages">
                     {filteredMessages.map((msg, index) => (
-                        <div
-                            key={index}
-                            className={`message ${
-                                msg.sender === nickname ? "sent" : "received"
-                            }`}
-                        >
-                            {msg.to && (
-                                <p className="private-tag">
-                                    [Private to {msg.to}]
-                                </p>
-                            )}
+                        <div key={index} className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}>
+                            {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
                             <p>{msg.text}</p>
                         </div>
                     ))}
@@ -166,12 +168,12 @@ function ChatRoom({ nickname }) {
                 )}
             </div>
 
-            {/* Liste des utilisateurs */}
-            <div className="sidebar-right">
+            {/* Sidebar droite avec la liste des utilisateurs */}
+            <div className="chat-sidebar-right">
                 <h3>Users</h3>
                 <ul>
                     {users.map((user) => (
-                        <li key={user} className="user-item">
+                        <li key={user} className="chat-user-item">
                             {user}
                         </li>
                     ))}

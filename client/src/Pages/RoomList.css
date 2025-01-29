@@ -1,4 +1,3 @@
-/* Conteneur principal */
 .RoomList-container {
     font-family: "Arial", sans-serif;
     padding: 20px;
@@ -10,20 +9,19 @@
 }
 
 body {
-    overflow: hidden; /* Empêche le scroll */
+    overflow: hidden;
 }
 
 .my-animation {
     position: fixed;
-    bottom: 10%; /* Toujours à 10% du bas */
-    right: 5%; /* Toujours à 5% de la droite */
-    z-index: 10; /* Au-dessus des autres éléments */
+    bottom: 10%;
+    right: 5%;
+    z-index: 10;
 }
 
-/* Conteneur principal */
 body.light-mode {
     position: relative;
-    background-color: #fef3dd;
+    background: linear-gradient(to right, #f5a623, #c85103);
 }
 
 .bubble {
@@ -38,14 +36,12 @@ body.light-mode {
     z-index: -1;
 }
 
-/* Générer plusieurs bulles de tailles différentes */
 .bubble:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-duration: 8s; }
 .bubble:nth-child(2) { left: 30%; width: 50px; animation-duration: 6s; }
 .bubble:nth-child(3) { left: 50%; width: 100px; animation-duration: 10s; }
 .bubble:nth-child(4) { left: 70%; width: 40px; animation-duration: 7s; }
 .bubble:nth-child(5) { left: 90%; width: 60px; animation-duration: 5s; }
 
-/* Animation de montée */
 @keyframes floatBubble {
     0% {
         transform: translateY(0) scale(1);
@@ -61,7 +57,6 @@ body.light-mode {
     }
 }
 
-/* Mode clair : Bulles animées */
 body.light-mode .background-effects {
     position: fixed;
     top: 0;
@@ -75,14 +70,13 @@ body.light-mode .background-effects {
 body.light-mode .bubble {
     position: absolute;
     bottom: -100px;
-    background: radial-gradient(circle, #ff7e5f, #feb47b);
+    background: radial-gradient(circle, #ff7e5f, #1c1c1c);
     opacity: 0.7;
     border-radius: 50%;
     animation: rise 6s infinite ease-in-out;
     pointer-events: none;
 }
 
-/* Génération de tailles et positions aléatoires */
 body.light-mode .bubble:nth-child(1) {
     width: 60px;
     height: 60px;
@@ -119,7 +113,6 @@ body.light-mode .bubble:nth-child(5) {
     animation-delay: 4s;
 }
 
-/* Animation des bulles */
 @keyframes rise {
     0% {
         transform: translateY(0) scale(0.8);
@@ -134,7 +127,6 @@ body.light-mode .bubble:nth-child(5) {
     }
 }
 
-/* Mode sombre : Formes lumineuses interactives */
 body.dark-mode .background-effects {
     position: fixed;
     top: 0;
@@ -145,12 +137,11 @@ body.dark-mode .background-effects {
     z-index: -1;
 }
 
-/* Formes lumineuses avec pulsation */
 body.dark-mode .pulse-shape {
     position: absolute;
     width: 120px;
     height: 120px;
-    background: radial-gradient(circle, rgb(254, 180, 123), rgba(255, 255, 255, 0));
+    background: radial-gradient(circle, rgb(245, 166, 35), rgb(200, 81, 3));
     border-radius: 50%;
     animation: pulseEffect 6s infinite ease-in-out;
     pointer-events: none;
@@ -158,7 +149,6 @@ body.dark-mode .pulse-shape {
     filter: blur(15px);
 }
 
-/* Génération dynamique de tailles et positions variées */
 body.dark-mode .pulse-shape:nth-child(1) {
     top: 20%;
     left: 30%;
@@ -192,7 +182,6 @@ body.dark-mode .pulse-shape:nth-child(4) {
     animation-delay: 1s;
 }
 
-/* Animation de pulsation */
 @keyframes pulseEffect {
     0% {
         transform: scale(0.8);
@@ -208,7 +197,6 @@ body.dark-mode .pulse-shape:nth-child(4) {
     }
 }
 
-/* Header */
 .RoomList-header {
     display: flex;
     justify-content: space-between;
@@ -227,7 +215,6 @@ body.dark-mode .pulse-shape:nth-child(4) {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* Partie gauche (avatar et nom) */
 .header-left {
     display: flex;
     align-items: center;
@@ -260,7 +247,6 @@ body.dark-mode .pulse-shape:nth-child(4) {
     color: #666;
 }
 
-/* Partie droite (boutons) */
 .header-right {
     display: flex;
     gap: 10px;
@@ -286,7 +272,7 @@ body.dark-mode .pulse-shape:nth-child(4) {
     transform: scale(1.1);
 }
 
-/* Barre de recherche */
+
 .search-container {
     margin: 20px 0;
     display: flex;
@@ -296,7 +282,7 @@ body.dark-mode .pulse-shape:nth-child(4) {
 
 .search-input {
     outline: none;
-    width: 80%; /* Ajustement pour réduire la largeur */
+    width: 80%;
     padding: 10px;
     font-size: 16px;
     border: 1px solid #ccc;
@@ -323,7 +309,6 @@ body.dark-mode .pulse-shape:nth-child(4) {
     transform: scale(1.1);
 }
 
-/* Liste des salons */
 .room-list {
     list-style: none;
     padding: 0;
@@ -332,13 +317,390 @@ body.dark-mode .pulse-shape:nth-child(4) {
 
 .room-item-wrapper {
     position: relative;
-    border-radius: 12px; /* Rayon des contours */
-    padding: 3px; /* Espace pour le gradient */
+    border-radius: 12px;
+    padding: 3px;
     background: linear-gradient(45deg, #c85103, #ffd700, #333333, #ff7e5f);
-    background-size: 400% 400%; /* Nécessaire pour l'animation */
-    animation: gradient-border-move 6s ease infinite; /* Animation fluide */
-    overflow: hidden; /* Empêche le débordement du contenu */
-    margin-bottom: 15px; /* Espace entre les boxes */
+    background-size: 400% 400%;
+    animation: gradient-border-move 6s ease infinite;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.room-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+.room-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes gradient-border-move {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.room-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.room-description {
+    cursor: pointer;
+    color: #666;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.room-description:hover {
+    color: #c85103;
+}
+
+.RoomList-container {
+    font-family: "Arial", sans-serif;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+body {
+    overflow: hidden;
+}
+
+.my-animation {
+    position: fixed;
+    bottom: 10%;
+    right: 5%;
+    z-index: 10;
+}
+
+body.light-mode {
+    position: relative;
+    background: linear-gradient(to right, #f5a623, #c85103);
+}
+
+.bubble {
+    position: absolute;
+    bottom: -100px;
+    width: 50px;
+    height: 50px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0));
+    border-radius: 50%;
+    animation: floatBubble 6s infinite ease-in-out;
+    opacity: 0.7;
+    z-index: -1;
+}
+
+.bubble:nth-child(1) { left: 10%; width: 80px; height: 80px; animation-duration: 8s; }
+.bubble:nth-child(2) { left: 30%; width: 50px; animation-duration: 6s; }
+.bubble:nth-child(3) { left: 50%; width: 100px; animation-duration: 10s; }
+.bubble:nth-child(4) { left: 70%; width: 40px; animation-duration: 7s; }
+.bubble:nth-child(5) { left: 90%; width: 60px; animation-duration: 5s; }
+
+@keyframes floatBubble {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: translateY(-300px) scale(1.2);
+        opacity: 0.6;
+    }
+    100% {
+        transform: translateY(-600px) scale(1.5);
+        opacity: 0;
+    }
+}
+
+body.light-mode .background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+body.light-mode .bubble {
+    position: absolute;
+    bottom: -100px;
+    background: radial-gradient(circle, #ff7e5f, #1c1c1c);
+    opacity: 0.7;
+    border-radius: 50%;
+    animation: rise 6s infinite ease-in-out;
+    pointer-events: none;
+}
+
+body.light-mode .bubble:nth-child(1) {
+    width: 60px;
+    height: 60px;
+    left: 20%;
+    animation-duration: 5s;
+    animation-delay: 0s;
+}
+body.light-mode .bubble:nth-child(2) {
+    width: 80px;
+    height: 80px;
+    left: 40%;
+    animation-duration: 7s;
+    animation-delay: 1s;
+}
+body.light-mode .bubble:nth-child(3) {
+    width: 100px;
+    height: 100px;
+    left: 60%;
+    animation-duration: 6s;
+    animation-delay: 2s;
+}
+body.light-mode .bubble:nth-child(4) {
+    width: 120px;
+    height: 120px;
+    left: 80%;
+    animation-duration: 8s;
+    animation-delay: 3s;
+}
+body.light-mode .bubble:nth-child(5) {
+    width: 90px;
+    height: 90px;
+    left: 50%;
+    animation-duration: 4s;
+    animation-delay: 4s;
+}
+
+@keyframes rise {
+    0% {
+        transform: translateY(0) scale(0.8);
+        opacity: 0.8;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-800px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+body.dark-mode .background-effects {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -1;
+}
+
+body.dark-mode .pulse-shape {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    background: radial-gradient(circle, rgb(254, 180, 123), rgba(255, 255, 255, 0));
+    border-radius: 50%;
+    animation: pulseEffect 6s infinite ease-in-out;
+    pointer-events: none;
+    opacity: 0.6;
+    filter: blur(15px);
+}
+
+body.dark-mode .pulse-shape:nth-child(1) {
+    top: 20%;
+    left: 30%;
+    width: 100px;
+    height: 100px;
+    animation-duration: 5s;
+    animation-delay: 0s;
+}
+body.dark-mode .pulse-shape:nth-child(2) {
+    top: 60%;
+    left: 50%;
+    width: 140px;
+    height: 140px;
+    animation-duration: 7s;
+    animation-delay: 2s;
+}
+body.dark-mode .pulse-shape:nth-child(3) {
+    top: 80%;
+    left: 70%;
+    width: 160px;
+    height: 160px;
+    animation-duration: 8s;
+    animation-delay: 3s;
+}
+body.dark-mode .pulse-shape:nth-child(4) {
+    top: 30%;
+    left: 80%;
+    width: 120px;
+    height: 120px;
+    animation-duration: 6s;
+    animation-delay: 1s;
+}
+
+
+@keyframes pulseEffect {
+    0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
+
+
+.RoomList-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.RoomList-header:hover {
+    background-color: #ebebeb;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid #c85103;
+    object-fit: cover;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.user-avatar:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    border-color: #ffd700;
+}
+
+.header-left h2 {
+    margin: 0;
+    font-size: 20px;
+    color: #1c1c1c;
+}
+
+.header-left small {
+    color: #666;
+}
+
+.header-right {
+    display: flex;
+    gap: 10px;
+}
+
+.mode-toggle-button,
+.logout-button {
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.mode-toggle-button:hover,
+.logout-button:hover {
+    background-color: #f0f0f0;
+    transform: scale(1.1);
+}
+
+.search-container {
+    margin: 20px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search-input {
+    outline: none;
+    width: 80%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.icon-container {
+    display: flex;
+    gap: -15px;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: #1c1c1c;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.icon:hover {
+    color: #c85103;
+    transform: scale(1.1);
+}
+
+.room-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.room-item-wrapper {
+    position: relative;
+    border-radius: 12px;
+    padding: 3px;
+    background: linear-gradient(45deg, #c85103, #ffd700, #333333, #ff7e5f);
+    background-size: 400% 400%;
+    animation: gradient-border-move 6s ease infinite;
+    overflow: hidden;
+    margin-bottom: 15px;
 }
 
 .room-item {
@@ -413,17 +775,17 @@ body.dark-mode .pulse-shape:nth-child(4) {
     transform: scale(1.1);
 }
 
-/* Pagination */
+
 .pagination {
     position: fixed;
-    bottom: 20px; /* Distance par rapport au bas */
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    z-index: 100; /* S'assure que la pagination reste au-dessus des autres éléments */
-    background: rgba(255, 255, 255, 0.9); /* Ajoute un fond léger */
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.9);
     padding: 10px;
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Effet d'ombre */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 
@@ -448,7 +810,7 @@ body.dark-mode .pulse-shape:nth-child(4) {
 }
 
 
-/* Mode sombre */
+
 body.dark-mode {
     background-color: #1c1c1c;
     color: white;
@@ -467,12 +829,11 @@ body.dark-mode .pagination-button {
     color: white;
 }
 
-/* Texte des boxes en mode sombre */
+
 body.dark-mode .room-item {
     color: #1c1c1c;
 }
 
-/* Icônes en mode sombre */
 body.dark-mode .room-icon,
 body.dark-mode .room-actions button {
     color: #1c1c1c;
@@ -487,34 +848,32 @@ body .room-actions button {
     transition: color 0.3s ease;
 }
 
-/* Petits écrans : Smartphones */
 @media (max-width: 768px) {
     .RoomList-header {
-        flex-direction: column; /* Les éléments en colonne */
+        flex-direction: column;
         align-items: center;
     }
 
     .my-animation {
-        bottom: 5%; /* Ajuste la position pour petits écrans */
+        bottom: 5%;
         right: 3%;
-        width: 40px; /* Réduit la taille */
+        width: 40px;
         height: 40px;
     }
 
     .room-item {
-        padding: 10px; /* Réduit les marges */
+        padding: 10px;
     }
 
 }
 
-/* Moyens écrans : Tablettes */
 @media (min-width: 768px) and (max-width: 1024px) {
     .room-item {
         padding: 15px;
     }
 
     .my-animation {
-        bottom: 8%; /* Ajuste pour tablettes */
+        bottom: 8%;
         right: 4%;
         width: 50px;
         height: 50px;
@@ -522,23 +881,173 @@ body .room-actions button {
 }
 
 .fixed-animation {
-    position: fixed; /* Fixe l'animation à un endroit spécifique de l'écran */
+    position: fixed;
     z-index: 100;
     width: 150px;
     height: 150px;
 }
 
 .bottom-left {
-    bottom: -20px; /* Ajuste la distance par rapport au bas */
-    left: -10px; /* Ajuste la distance par rapport à la gauche */
+    bottom: -20px;
+    left: -10px;
 }
 
 .top-right {
-    top: 10px; /* Ajuste la distance par rapport au haut */
-    right: 60px; /* Ajuste la distance par rapport à la droite */
+    top: 10px;
+    right: 60px;
 }
 
 .fixed-animation.top-right {
-    width: 120px; /* Ajuste la largeur */
-    height: 120px; /* Ajuste la hauteur */
+    width: 120px;
+    height: 120px;
+}
+
+.room-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.room-actions button {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.room-actions button:hover {
+    color: #c85103;
+    transform: scale(1.1);
+}
+
+
+.pagination {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+.pagination-button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.pagination-button.active {
+    background-color: #c85103;
+    color: white;
+    transform: scale(1.1);
+}
+
+.pagination-button:hover {
+    background-color: #1c1c1c;
+    transform: scale(1.1);
+}
+
+
+
+body.dark-mode {
+    background-color: #1c1c1c;
+    color: white;
+}
+
+body.dark-mode .RoomList-header {
+    background-color: #333333;
+}
+
+body.dark-mode .icon {
+    color: #fff;
+}
+
+body.dark-mode .pagination-button {
+    background-color: #444;
+    color: white;
+}
+
+
+body.dark-mode .room-item {
+    color: #1c1c1c;
+}
+
+body.dark-mode .room-icon,
+body.dark-mode .room-actions button {
+    color: #1c1c1c;
+}
+
+body .room-item {
+    transition: color 0.3s ease;
+}
+
+body .room-icon,
+body .room-actions button {
+    transition: color 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .RoomList-header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .my-animation {
+        bottom: 5%;
+        right: 3%;
+        width: 40px;
+        height: 40px;
+    }
+
+    .room-item {
+        padding: 10px;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+    .room-item {
+        padding: 15px;
+    }
+
+    .my-animation {
+        bottom: 8%;
+        right: 4%;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.fixed-animation {
+    position: fixed;
+    z-index: 100;
+    width: 150px;
+    height: 150px;
+}
+
+.bottom-left {
+    bottom: -20px;
+    left: -10px;
+}
+
+.top-right {
+    top: 10px;
+    right: 60px;
+}
+
+.fixed-animation.top-right {
+    width: 120px;
+    height: 120px;
 }
