@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./ChatRoom.css";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import lamarAnimation from "../assets/animations/lamar.lottie";
+import { socket } from '../socket';
 
 function ChatRoom({ nickname }) {
     const navigate = useNavigate();
@@ -17,7 +18,7 @@ function ChatRoom({ nickname }) {
         return savedMessages ? JSON.parse(savedMessages) : [];
     });
 
-    const [users] = useState(["Aurore", "Bob"]);
+    const [users, setUsers] = useState([]);
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
 
@@ -29,8 +30,28 @@ function ChatRoom({ nickname }) {
         localStorage.setItem("chatMessages", JSON.stringify(messages));
     }, [messages]);
 
+    useEffect(() => {
+        const getUsers = () => {
+            socket.emit('get-users', currentRoom);
+        };
+
+        socket.on('users', (users) => {
+            setUsers(users);
+        });
+
+        getUsers();
+
+        const interval = setInterval(getUsers, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('users');
+        };
+    }, []);
+
     const handleSendMessage = () => {
         if (!currentMessage.trim() || !currentRoom) return;
+        socket.emit('chat-message',currentMessage);
 
         if (currentMessage.startsWith("/msg ")) {
             const parts = currentMessage.split(" ");
