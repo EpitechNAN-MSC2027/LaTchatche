@@ -168,6 +168,23 @@ async function getChannels() {
     });
 }
 
+async function getMyChannels(nickname) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT Channels.channelName, Channels.channelDescription FROM Channels JOIN Pairs ON Channels.channelName = Pairs.channelName WHERE Channels.isAlive = 1 AND Pairs.nickname = ?", [nickname], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allChannels = resultat.map(item => ({
+                    channelName: item.channelName,
+                    channelDescription: item.channelDescription
+                }));
+                resolve(allChannels);
+            }
+        });
+    });
+}
+
 async function UpdateChannel(valeur) {
     connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
         if (err) {
@@ -225,6 +242,11 @@ io.on('connection', (socket) => { // When a user connects
 
     socket.on('get-rooms', async () => {
         const allRooms = await getChannels();
+        socket.emit('rooms', allRooms);
+    });
+
+    socket.on('get-myrooms', async () => {
+        const allRooms = await getMyChannels(name);
         socket.emit('rooms', allRooms);
     });
 
