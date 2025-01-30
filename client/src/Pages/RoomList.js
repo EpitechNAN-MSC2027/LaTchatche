@@ -92,7 +92,7 @@ function RoomList({ nickname, avatar }) {
         ]);
         setNewRoom({ name: "", description: "" });
         setIsModalOpen(false);
-        socket.emit("create-room", newRoom.name);
+        socket.emit("create-room", newRoom.name, newRoom.description);
     };
 
     const navigate = useNavigate();
