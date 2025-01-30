@@ -92,6 +92,7 @@ function RoomList({ nickname, avatar }) {
         ]);
         setNewRoom({ name: "", description: "" });
         setIsModalOpen(false);
+        socket.emit("create-room", newRoom.name);
     };
 
     const navigate = useNavigate();
@@ -100,8 +101,9 @@ function RoomList({ nickname, avatar }) {
         navigate(`/chatroom`); // Redirige vers la page ChatRoom
     };
 
-    const handleRoomDelete = (roomId) => {
+    const handleRoomDelete = (roomId, roomName) => {
         setRooms(rooms.filter((room) => room.id !== roomId));
+        socket.emit('delete-room', roomName);
     };
 
     const [infoModal, setInfoModal] = useState({ visible: false, description: "" });
@@ -273,7 +275,7 @@ function RoomList({ nickname, avatar }) {
                                     <FiCheckCircle />
                                 </button>
                                 {room.createdByUser && (
-                                    <button onClick={() => handleRoomDelete(room.id)} className="delete-button">
+                                    <button onClick={() => handleRoomDelete(room.id, room.name)} className="delete-button">
                                         <FiTrash2 />
                                     </button>
                                 )}
