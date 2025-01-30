@@ -87,12 +87,13 @@ function RoomList({ nickname, avatar }) {
     };
 
     const handleSearchChange = (e) => setSearch(e.target.value);
+
     const handleRoomCreation = () => {
         if (!newRoom.name.trim() || !newRoom.description.trim()) {
             alert("Room name and description cannot be empty.");
             return;
         }
-        if (rooms.some((room) => room.name.toLowerCase() === newRoom.name.toLowerCase())) {
+        if (rooms.some((room) => room.channelName.toLowerCase() === newRoom.name.toLowerCase())) {
             alert("A room with this name already exists.");
             return;
         }
@@ -108,8 +109,7 @@ function RoomList({ nickname, avatar }) {
         navigate(`/chatroom`); // Redirige vers la page ChatRoom
     };
 
-    const handleRoomDelete = (roomId, roomName) => {
-        setRooms(rooms.filter((room) => room.id !== roomId));
+    const handleRoomDelete = (roomName) => {
         socket.emit('delete-room', roomName);
     };
 
@@ -281,8 +281,8 @@ function RoomList({ nickname, avatar }) {
                                 <button onClick={() => handleRoomJoin(room.channelName)} className="join-button">
                                     <FiCheckCircle />
                                 </button>
-                                {room.createdByUser && (
-                                    <button onClick={() => handleRoomDelete(room.id, room.name)} className="delete-button">
+                                {room.channelName !== 'General' && (
+                                    <button onClick={() => handleRoomDelete(room.channelName)} className="delete-button">
                                         <FiTrash2 />
                                     </button>
                                 )}
