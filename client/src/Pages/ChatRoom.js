@@ -8,11 +8,7 @@ import { socket } from '../socket';
 function ChatRoom({ nickname }) {
     const navigate = useNavigate();
 
-    const [rooms, setRooms] = useState(() => {
-        const savedRooms = localStorage.getItem("chatRooms");
-        return savedRooms ? JSON.parse(savedRooms) : ["General", "TechTalk", "Random"];
-    });
-
+    const [rooms, setRooms] = useState(() => {});
     const [messages, setMessages] = useState(() => {
         const savedMessages = localStorage.getItem("chatMessages");
         return savedMessages ? JSON.parse(savedMessages) : [];
@@ -49,9 +45,28 @@ function ChatRoom({ nickname }) {
         };
     }, []);
 
+    useEffect(() => {
+        const getRooms = () => {
+            socket.emit('get-myrooms');
+        };
+
+        socket.on('rooms', (rooms) => {
+            setRooms(rooms);
+        });
+
+        getRooms();
+
+        const interval = setInterval(getRooms, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('rooms');
+        };
+    }, []);
+
     const handleSendMessage = () => {
         if (!currentMessage.trim() || !currentRoom) return;
-        socket.emit('chat-message',currentMessage);
+        socket.emit('chat-message',currentMessage, currentRoom);
 
         if (currentMessage.startsWith("/msg ")) {
             const parts = currentMessage.split(" ");
@@ -132,13 +147,13 @@ function ChatRoom({ nickname }) {
                 <h3>Rooms</h3>
                 <div className="room-title">{currentRoom}</div>
                 <ul>
-                    {rooms.map((room) => (
+                    {rooms && rooms.map((room) => (
                         <li
-                            key={room}
-                            className={`chat-room-item ${room === currentRoom ? "active-chat-room" : ""}`}
-                            onClick={() => handleRoomChange(room)}
+                            key={room.channelName}
+                            className={`chat-room-item ${room.channelName === currentRoom ? "active-chat-room" : ""}`}
+                            onClick={() => handleRoomChange(room.channelName)}
                         >
-                            {room}
+                            {room.channelName}
                         </li>
                     ))}
                 </ul>
