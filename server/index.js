@@ -64,7 +64,7 @@ async function InsertPrivateMessage(valeur) {
 }
 
 async function InsertUser(valeur) {
-    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => 
+    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -136,6 +136,20 @@ async function DeletechannelNamePair(valeur) {
     });
 }
 
+async function getPair(channel) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [channel], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allNicknames = resultat.map(item => item.nickname);
+                resolve(allNicknames);
+            }
+        });
+    });
+}
+
 //X for nameX
 let x = 1;
 //List of all users
@@ -168,6 +182,20 @@ io.on('connection', (socket) => { // When a user connects
         io.to(currentRoom).emit('chat message', `${name} joined the room.`);
     });
 
+    socket.on('create-room', (room) => {
+        InsertChannel([room]);
+        io.emit('chat message', "New room : " + room + " has been created by " + name);
+    });
+
+    socket.on('delete-room', (room) => {
+        DeletechannelNamePair([room]);
+        io.emit('chat message', "Room : " + room + " has been deleted by " + name);
+    });
+
+    socket.on('get-users', async (room) => {
+        const allNicknames = await getPair(room);
+        socket.emit('users', allNicknames);
+    });
 
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects
@@ -190,7 +218,7 @@ io.on('connection', (socket) => { // When a user connects
     });
 
     // When a msg is sent, broadcast it to all users
-    socket.on('chat message', async (msg, userroom) => {
+    socket.on('chat-message', async (msg, userroom) => {
 
         if (userroom){
             currentRoom = userroom;
