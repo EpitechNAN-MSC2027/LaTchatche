@@ -225,7 +225,6 @@ io.on('connection', (socket) => { // When a user connects
 
     socket.on('get-rooms', async () => {
         const allRooms = await getChannels();
-        console.log(allRooms);
         socket.emit('rooms', allRooms);
     });
 
