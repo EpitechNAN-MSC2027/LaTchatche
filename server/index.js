@@ -83,7 +83,7 @@ async function UpdateUser(valeur) {
 }
 
 async function InsertChannel(valeur) {
-    connection.query("INSERT IGNORE INTO Channels (channelName) VALUES (?)", valeur, (err, result) => {
+    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
@@ -150,6 +150,16 @@ async function getPair(channel) {
     });
 }
 
+async function UpdateChannel(valeur) {
+    connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+        } else {
+            console.log('Data updated successfully!');
+        }
+    });
+}
+
 //X for nameX
 let x = 1;
 //List of all users
@@ -182,14 +192,13 @@ io.on('connection', (socket) => { // When a user connects
         io.to(currentRoom).emit('chat message', `${name} joined the room.`);
     });
 
-    socket.on('create-room', (room) => {
-        InsertChannel([room]);
-        io.emit('chat message', "New room : " + room + " has been created by " + name);
+    socket.on('create-room', (rName, rDescription ) => {
+        InsertChannel([rName, rDescription, 1]);
     });
 
-    socket.on('delete-room', (room) => {
-        DeletechannelNamePair([room]);
-        io.emit('chat message', "Room : " + room + " has been deleted by " + name);
+    socket.on('delete-room', (rName) => {
+        DeletechannelNamePair([rName]);
+        UpdateChannel([0,rName]);
     });
 
     socket.on('get-users', async (room) => {
