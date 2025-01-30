@@ -185,6 +185,23 @@ async function getMyChannels(nickname) {
     });
 }
 
+async function getMessages(room) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT texteMessage, nickname FROM Messages WHERE channelName = ?", [room], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allMessages = resultat.map(item => ({
+                    text: item.texteMessage,
+                    sender: item.nickname
+                }));
+                resolve(allMessages);
+            }
+        });
+    });
+}
+
 async function UpdateChannel(valeur) {
     connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
         if (err) {
@@ -250,6 +267,11 @@ io.on('connection', (socket) => { // When a user connects
         socket.emit('rooms', allRooms);
     });
 
+    socket.on('get-messages', async (room) => {
+        const allMessages = await getMessages(room);
+        socket.emit('messages', allMessages);
+    });
+
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects
         users = users.filter(item => item !== name);
@@ -271,7 +293,7 @@ io.on('connection', (socket) => { // When a user connects
     });
 
     // When a msg is sent, broadcast it to all users
-    socket.on('chat-message', async (msg, userroom) => {
+    socket.on('chat message', async (msg, userroom) => {
 
         if (userroom){
             currentRoom = userroom;

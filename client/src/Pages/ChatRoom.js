@@ -9,22 +9,11 @@ function ChatRoom({ nickname }) {
     const navigate = useNavigate();
 
     const [rooms, setRooms] = useState(() => {});
-    const [messages, setMessages] = useState(() => {
-        const savedMessages = localStorage.getItem("chatMessages");
-        return savedMessages ? JSON.parse(savedMessages) : [];
-    });
+    const [messages, setMessages] = useState([]);
 
     const [users, setUsers] = useState([]);
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
-
-    useEffect(() => {
-        localStorage.setItem("chatRooms", JSON.stringify(rooms));
-    }, [rooms]);
-
-    useEffect(() => {
-        localStorage.setItem("chatMessages", JSON.stringify(messages));
-    }, [messages]);
 
     useEffect(() => {
         const getUsers = () => {
@@ -64,29 +53,27 @@ function ChatRoom({ nickname }) {
         };
     }, []);
 
+    useEffect(() => {
+        const getMessages = () => {
+            socket.emit('get-messages', currentRoom);
+        };
+
+        socket.on('messages', (messages) => {
+            setMessages(messages);
+        });
+
+        getMessages();
+
+        const interval = setInterval(getMessages, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('chat message');
+        };
+    }, []);
+
     const handleSendMessage = () => {
-        if (!currentMessage.trim() || !currentRoom) return;
-        socket.emit('chat-message',currentMessage, currentRoom);
-
-        if (currentMessage.startsWith("/msg ")) {
-            const parts = currentMessage.split(" ");
-            if (parts.length >= 3) {
-                const recipient = parts[1];
-                const privateMessage = parts.slice(2).join(" ");
-
-                if (users.includes(recipient)) {
-                    const newMessage = {
-                        sender: nickname,
-                        text: privateMessage,
-                        room: currentRoom,
-                        to: recipient,
-                    };
-                    setMessages([...messages, newMessage]);
-                    setCurrentMessage("");
-                    return;
-                }
-            }
-        }
+        socket.emit('chat message',currentMessage, currentRoom);
 
         const newMessage = {
             sender: nickname,
@@ -130,15 +117,6 @@ function ChatRoom({ nickname }) {
         navigate("/chatroom");
     };
 
-    const filteredMessages = messages.filter((msg) => {
-        if (msg.to) {
-            return (
-                (msg.to === nickname && msg.sender !== nickname) ||
-                (msg.sender === nickname && msg.to)
-            );
-        }
-        return msg.room === currentRoom && !msg.to;
-    });
 
     return (
         <div className="chat-room-container">
@@ -184,7 +162,7 @@ function ChatRoom({ nickname }) {
                     </div>
                 </header>
                 <div className="chat-messages">
-                    {filteredMessages.map((msg, index) => (
+                    {messages.map((msg, index) => (
                         <div key={index} className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}>
                             {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
                             <p>{msg.text}</p>
