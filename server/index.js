@@ -95,8 +95,9 @@ async function InsertPair(valeur) {
     connection.query("INSERT IGNORE INTO Pairs (nickname, channelName) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
+        } else {
+            console.log('Data inserted successfully!');
         }
-        console.log('Data inserted successfully!');
     });
 }
 
@@ -150,6 +151,23 @@ async function getPair(channel) {
     });
 }
 
+async function getChannels() {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT channelName, channelDescription FROM Channels WHERE isAlive = 1", (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allChannels = resultat.map(item => ({
+                    channelName: item.channelName,
+                    channelDescription: item.channelDescription
+                }));
+                resolve(allChannels);
+            }
+        });
+    });
+}
+
 async function UpdateChannel(valeur) {
     connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
         if (err) {
@@ -184,7 +202,6 @@ io.on('connection', (socket) => { // When a user connects
     socket.on('join-room', (room) => {
         socket.join(currentRoom); // Join default room
         currentRoom = room;
-        console.log("joined room: " + currentRoom + " by " + name);
         InsertPair([name, currentRoom]);
         if (!name) {
             console.log("Warning: Name is undefined in join-room handler");
@@ -204,6 +221,12 @@ io.on('connection', (socket) => { // When a user connects
     socket.on('get-users', async (room) => {
         const allNicknames = await getPair(room);
         socket.emit('users', allNicknames);
+    });
+
+    socket.on('get-rooms', async () => {
+        const allRooms = await getChannels();
+        console.log(allRooms);
+        socket.emit('rooms', allRooms);
     });
 
     // When a user disconnects
