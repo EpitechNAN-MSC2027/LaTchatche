@@ -64,7 +64,7 @@ async function InsertPrivateMessage(valeur) {
 }
 
 async function InsertUser(valeur) {
-    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => 
+    connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         } else {
@@ -82,8 +82,8 @@ async function UpdateUser(valeur) {
     });
 }
 
-async function InsertChannel(valeur) {
-    connection.query("INSERT IGNORE INTO Channels (channelName) VALUES (?)", valeur, (err, result) => {
+async function InsertChannel(cName, cDescription) {
+    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", cName, cDescription, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
@@ -95,8 +95,9 @@ async function InsertPair(valeur) {
     connection.query("INSERT IGNORE INTO Pairs (nickname, channelName) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
+        } else {
+            console.log('Data inserted successfully!');
         }
-        console.log('Data inserted successfully!');
     });
 }
 
@@ -136,6 +137,81 @@ async function DeletechannelNamePair(valeur) {
     });
 }
 
+async function getPair(channel) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [channel], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allNicknames = resultat.map(item => item.nickname);
+                resolve(allNicknames);
+            }
+        });
+    });
+}
+
+async function getChannels() {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT channelName, channelDescription FROM Channels WHERE isAlive = 1", (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allChannels = resultat.map(item => ({
+                    channelName: item.channelName,
+                    channelDescription: item.channelDescription
+                }));
+                resolve(allChannels);
+            }
+        });
+    });
+}
+
+async function getMyChannels(nickname) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT Channels.channelName, Channels.channelDescription FROM Channels JOIN Pairs ON Channels.channelName = Pairs.channelName WHERE Channels.isAlive = 1 AND Pairs.nickname = ?", [nickname], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allChannels = resultat.map(item => ({
+                    channelName: item.channelName,
+                    channelDescription: item.channelDescription
+                }));
+                resolve(allChannels);
+            }
+        });
+    });
+}
+
+async function getMessages(room) {
+    return new Promise((resolve, reject) => {
+        connection.query("SELECT texteMessage, nickname FROM Messages WHERE channelName = ?", [room], (err, resultat) => {
+            if (err) {
+                console.error("Error executing query:", err.message);
+                reject(err);
+            } else {
+                const allMessages = resultat.map(item => ({
+                    text: item.texteMessage,
+                    sender: item.nickname
+                }));
+                resolve(allMessages);
+            }
+        });
+    });
+}
+
+async function UpdateChannel(valeur) {
+    connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
+        if (err) {
+            console.error('Error updating data:', err);
+        } else {
+            console.log('Data updated successfully!');
+        }
+    });
+}
+
 //X for nameX
 let x = 1;
 //List of all users
@@ -160,7 +236,6 @@ io.on('connection', (socket) => { // When a user connects
     socket.on('join-room', (room) => {
         socket.join(currentRoom); // Join default room
         currentRoom = room;
-        console.log("joined room: " + currentRoom + " by " + name);
         InsertPair([name, currentRoom]);
         if (!name) {
             console.log("Warning: Name is undefined in join-room handler");
@@ -168,6 +243,34 @@ io.on('connection', (socket) => { // When a user connects
         io.to(currentRoom).emit('chat message', `${name} joined the room.`);
     });
 
+    socket.on('create-room', (rName, rDescription ) => {
+        InsertChannel([rName, rDescription, 1]);
+    });
+
+    socket.on('delete-room', (rName) => {
+        DeletechannelNamePair([rName]);
+        UpdateChannel([0,rName]);
+    });
+
+    socket.on('get-users', async (room) => {
+        const allNicknames = await getPair(room);
+        socket.emit('users', allNicknames);
+    });
+
+    socket.on('get-rooms', async () => {
+        const allRooms = await getChannels();
+        socket.emit('rooms', allRooms);
+    });
+
+    socket.on('get-myrooms', async () => {
+        const allRooms = await getMyChannels(name);
+        socket.emit('rooms', allRooms);
+    });
+
+    socket.on('get-messages', async (room) => {
+        const allMessages = await getMessages(room);
+        socket.emit('messages', allMessages);
+    });
 
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects

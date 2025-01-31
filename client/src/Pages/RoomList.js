@@ -24,11 +24,7 @@ import eyeAnimation from "../assets/animations/eye.lottie";
 function RoomList({ nickname, avatar }) {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [greeting, setGreeting] = useState("");
-    const [rooms, setRooms] = useState([
-        { id: 1, name: "General", description: "General chat room", createdByUser: false },
-        { id: 2, name: "TechTalk", description: "Discuss technology", createdByUser: true },
-        { id: 3, name: "Random", description: "Anything goes", createdByUser: false },
-    ]);
+    const [rooms, setRooms] = useState([]);
     const [search, setSearch] = useState("");
     const [newRoom, setNewRoom] = useState({ name: "", description: "" });
     const [currentPage, setCurrentPage] = useState(1);
@@ -57,6 +53,25 @@ function RoomList({ nickname, avatar }) {
         else setGreeting("Good Evening");
     }, []);
 
+    useEffect(() => {
+        const getRooms = () => {
+            socket.emit('get-rooms');
+        };
+
+        socket.on('rooms', (rooms) => {
+            setRooms(rooms);
+        });
+
+        getRooms();
+
+        const interval = setInterval(getRooms, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('rooms');
+        };
+    }, []);
+
     const toggleDarkMode = () => {
         const newMode = !isDarkMode;
         setIsDarkMode(newMode);
@@ -72,26 +87,20 @@ function RoomList({ nickname, avatar }) {
     };
 
     const handleSearchChange = (e) => setSearch(e.target.value);
+
     const handleRoomCreation = () => {
         if (!newRoom.name.trim() || !newRoom.description.trim()) {
             alert("Room name and description cannot be empty.");
             return;
         }
-        if (rooms.some((room) => room.name.toLowerCase() === newRoom.name.toLowerCase())) {
+        if (rooms.some((room) => room.channelName.toLowerCase() === newRoom.name.toLowerCase())) {
             alert("A room with this name already exists.");
             return;
         }
-        setRooms([
-            ...rooms,
-            {
-                id: rooms.length + 1,
-                name: newRoom.name,
-                description: newRoom.description,
-                createdByUser: true,
-            },
-        ]);
+
         setNewRoom({ name: "", description: "" });
         setIsModalOpen(false);
+        socket.emit("create-room", newRoom.name, newRoom.description);
     };
 
     const navigate = useNavigate();
@@ -100,8 +109,8 @@ function RoomList({ nickname, avatar }) {
         navigate(`/chatroom`); // Redirige vers la page ChatRoom
     };
 
-    const handleRoomDelete = (roomId) => {
-        setRooms(rooms.filter((room) => room.id !== roomId));
+    const handleRoomDelete = (roomName) => {
+        socket.emit('delete-room', roomName);
     };
 
     const [infoModal, setInfoModal] = useState({ visible: false, description: "" });
@@ -115,7 +124,7 @@ function RoomList({ nickname, avatar }) {
     };
 
     const filteredRooms = rooms.filter((room) =>
-        room.name.toLowerCase().includes(search.toLowerCase())
+        room.channelName.toLowerCase().includes(search.toLowerCase())
     );
 
     const indexOfLastRoom = currentPage * roomsPerPage;
@@ -261,19 +270,19 @@ function RoomList({ nickname, avatar }) {
                     <li key={room.id} className="room-item-wrapper">
                         <div className="room-item">
                             <div className="room-info">
-                                <strong>{room.name}</strong>
+                                <strong>{room.channelName}</strong>
                                 <FiInfo
                                     className="room-icon info-icon"
                                     title="Room Info"
-                                    onClick={() => showRoomInfo(room.description)}
+                                    onClick={() => showRoomInfo(room.channelDescription)}
                                 />
                             </div>
                             <div className="room-actions">
-                                <button onClick={() => handleRoomJoin(room.name)} className="join-button">
+                                <button onClick={() => handleRoomJoin(room.channelName)} className="join-button">
                                     <FiCheckCircle />
                                 </button>
-                                {room.createdByUser && (
-                                    <button onClick={() => handleRoomDelete(room.id)} className="delete-button">
+                                {room.channelName !== 'General' && (
+                                    <button onClick={() => handleRoomDelete(room.channelName)} className="delete-button">
                                         <FiTrash2 />
                                     </button>
                                 )}

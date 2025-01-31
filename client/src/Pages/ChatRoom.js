@@ -3,54 +3,76 @@ import { useNavigate } from "react-router-dom";
 import "./ChatRoom.css";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 import lamarAnimation from "../assets/animations/lamar.lottie";
+import { socket } from '../socket';
 
 function ChatRoom({ nickname }) {
     const navigate = useNavigate();
 
-    const [rooms, setRooms] = useState(() => {
-        const savedRooms = localStorage.getItem("chatRooms");
-        return savedRooms ? JSON.parse(savedRooms) : ["General", "TechTalk", "Random"];
-    });
+    const [rooms, setRooms] = useState(() => {});
+    const [messages, setMessages] = useState([]);
 
-    const [messages, setMessages] = useState(() => {
-        const savedMessages = localStorage.getItem("chatMessages");
-        return savedMessages ? JSON.parse(savedMessages) : [];
-    });
-
-    const [users] = useState(["Aurore", "Bob"]);
+    const [users, setUsers] = useState([]);
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
 
     useEffect(() => {
-        localStorage.setItem("chatRooms", JSON.stringify(rooms));
-    }, [rooms]);
+        const getUsers = () => {
+            socket.emit('get-users', currentRoom);
+        };
+
+        socket.on('users', (users) => {
+            setUsers(users);
+        });
+
+        getUsers();
+
+        const interval = setInterval(getUsers, 2000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     useEffect(() => {
-        localStorage.setItem("chatMessages", JSON.stringify(messages));
-    }, [messages]);
+        const getRooms = () => {
+            socket.emit('get-myrooms');
+        };
+
+        socket.on('rooms', (rooms) => {
+            setRooms(rooms);
+        });
+
+        getRooms();
+
+        const interval = setInterval(getRooms, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('rooms');
+        };
+    }, []);
+
+    useEffect(() => {
+        const getMessages = () => {
+            socket.emit('get-messages', currentRoom);
+        };
+
+        socket.on('messages', (messages) => {
+            setMessages(messages);
+        });
+
+        getMessages();
+
+        const interval = setInterval(getMessages, 2000);
+
+        return () => {
+            clearInterval(interval);
+            socket.off('chat message');
+        };
+    }, []);
 
     const handleSendMessage = () => {
-        if (!currentMessage.trim() || !currentRoom) return;
-
-        if (currentMessage.startsWith("/msg ")) {
-            const parts = currentMessage.split(" ");
-            if (parts.length >= 3) {
-                const recipient = parts[1];
-                const privateMessage = parts.slice(2).join(" ");
-
-                if (users.includes(recipient)) {
-                    const newMessage = {
-                        sender: nickname,
-                        text: privateMessage,
-                        room: currentRoom,
-                        to: recipient,
-                    };
-                    setMessages([...messages, newMessage]);
-                    setCurrentMessage("");
-                    return;
-                }
-            }
-        }
+        socket.emit('chat message',currentMessage, currentRoom);
 
         const newMessage = {
             sender: nickname,
@@ -94,15 +116,6 @@ function ChatRoom({ nickname }) {
         navigate("/chatroom");
     };
 
-    const filteredMessages = messages.filter((msg) => {
-        if (msg.to) {
-            return (
-                (msg.to === nickname && msg.sender !== nickname) ||
-                (msg.sender === nickname && msg.to)
-            );
-        }
-        return msg.room === currentRoom && !msg.to;
-    });
 
     return (
         <div className="chat-room-container">
@@ -111,13 +124,13 @@ function ChatRoom({ nickname }) {
                 <h3>Rooms</h3>
                 <div className="room-title">{currentRoom}</div>
                 <ul>
-                    {rooms.map((room) => (
+                    {rooms && rooms.map((room) => (
                         <li
-                            key={room}
-                            className={`chat-room-item ${room === currentRoom ? "active-chat-room" : ""}`}
-                            onClick={() => handleRoomChange(room)}
+                            key={room.channelName}
+                            className={`chat-room-item ${room.channelName === currentRoom ? "active-chat-room" : ""}`}
+                            onClick={() => handleRoomChange(room.channelName)}
                         >
-                            {room}
+                            {room.channelName}
                         </li>
                     ))}
                 </ul>
@@ -148,7 +161,7 @@ function ChatRoom({ nickname }) {
                     </div>
                 </header>
                 <div className="chat-messages">
-                    {filteredMessages.map((msg, index) => (
+                    {messages.map((msg, index) => (
                         <div key={index} className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}>
                             {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
                             <p>{msg.text}</p>
@@ -162,6 +175,11 @@ function ChatRoom({ nickname }) {
                             placeholder={`Message in ${currentRoom}...`}
                             value={currentMessage}
                             onChange={(e) => setCurrentMessage(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSendMessage();
+                                }
+                            }}
                         />
                         <button onClick={handleSendMessage}>Send</button>
                     </div>
