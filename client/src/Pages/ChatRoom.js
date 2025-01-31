@@ -30,7 +30,6 @@ function ChatRoom({ nickname }) {
 
         return () => {
             clearInterval(interval);
-            socket.off('users');
         };
     }, []);
 
@@ -176,6 +175,11 @@ function ChatRoom({ nickname }) {
                             placeholder={`Message in ${currentRoom}...`}
                             value={currentMessage}
                             onChange={(e) => setCurrentMessage(e.target.value)}
+                            onKeyPress={(e) => {
+                                if (e.key === 'Enter') {
+                                    handleSendMessage();
+                                }
+                            }}
                         />
                         <button onClick={handleSendMessage}>Send</button>
                     </div>
