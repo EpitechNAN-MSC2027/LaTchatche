@@ -16,72 +16,42 @@ function ChatRoom({ nickname }) {
     const [currentMessage, setCurrentMessage] = useState("");
 
     useEffect(() => {
-        const getUsers = () => {
-            socket.emit('get-users', currentRoom);
-        };
 
         socket.on('users', (users) => {
             setUsers(users);
         });
 
-        getUsers();
-
-        const interval = setInterval(getUsers, 2000);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, []);
-
-    useEffect(() => {
-        const getRooms = () => {
-            socket.emit('get-myrooms');
-        };
-
         socket.on('rooms', (rooms) => {
             setRooms(rooms);
         });
 
-        getRooms();
-
-        const interval = setInterval(getRooms, 2000);
-
-        return () => {
-            clearInterval(interval);
-            socket.off('rooms');
-        };
-    }, []);
-
-    useEffect(() => {
-        const getMessages = () => {
-            socket.emit('get-messages', currentRoom);
-        };
-
         socket.on('messages', (messages) => {
+
             setMessages(messages);
         });
 
-        getMessages();
-
-        const interval = setInterval(getMessages, 2000);
-
         return () => {
-            clearInterval(interval);
-            socket.off('chat message');
+            socket.off('users');
+            socket.off('rooms');
+            socket.off('messages');
         };
-    }, []);
+    }, [socket]);
+
+    socket.on('users', (users) => {
+        setUsers(users);
+    });
+
+    socket.on('rooms', (rooms) => {
+        setRooms(rooms);
+    });
+
+    socket.on('chat message', (msg) => {
+        setMessages([...messages, msg]);
+    });
+
 
     const handleSendMessage = () => {
         socket.emit('chat message',currentMessage, currentRoom);
-
-        const newMessage = {
-            sender: nickname,
-            text: currentMessage,
-            room: currentRoom,
-            to: null,
-        };
-        setMessages([...messages, newMessage]);
-        setCurrentMessage("");
     };
 
     const handleRoomChange = (room) => {

@@ -23,6 +23,10 @@ const connection = mysql.createConnection({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
   port: process.env.DB_PORT,
+    maxIdle: 999999,
+    idleTimeout: 999999,
+    enableKeepAlive: true,
+    connectTimeout: 99999,
 });
 
 connection.connect((err) => {
@@ -82,12 +86,13 @@ async function UpdateUser(valeur) {
     });
 }
 
-async function InsertChannel(cName, cDescription) {
-    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", cName, cDescription, (err, result) => {
+async function InsertChannel([cName, cDescription]) {
+    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", [cName, cDescription], (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
+        } else {
+            console.log('Data inserted successfully!');
         }
-        console.log('Data inserted successfully!');
     });
 }
 
@@ -225,22 +230,32 @@ io.on('connection', (socket) => { // When a user connects
     let connectedRooms = [currentRoom];
     //currentRoom is the room where the user is writing a message
     let name;
+    let avatarID
 
     socket.on('login', (nickname) => {
         name = nickname;
+        users.push([name, socket.id]);
     });
     socket.on('avatar', (avatar) => {
+        avatarID = avatar;
         InsertUser([name, avatar]);
     });
 
-    socket.on('join-room', (room) => {
-        socket.join(currentRoom); // Join default room
+    socket.on('join-room', async (room) => {
         currentRoom = room;
+        socket.join(currentRoom); // Join default room
         InsertPair([name, currentRoom]);
         if (!name) {
             console.log("Warning: Name is undefined in join-room handler");
         }
-        io.to(currentRoom).emit('chat message', `${name} joined the room.`);
+        const allNicknames = await getPair(room);
+        io.to(currentRoom).emit('users', allNicknames);
+
+        const allRooms = await getMyChannels(name);
+        socket.emit('rooms', allRooms);
+
+        const allMessages = await getMessages(room);
+        socket.emit('messages', allMessages);
     });
 
     socket.on('create-room', (rName, rDescription ) => {
@@ -252,25 +267,13 @@ io.on('connection', (socket) => { // When a user connects
         UpdateChannel([0,rName]);
     });
 
-    socket.on('get-users', async (room) => {
-        const allNicknames = await getPair(room);
-        socket.emit('users', allNicknames);
-    });
+
 
     socket.on('get-rooms', async () => {
         const allRooms = await getChannels();
         socket.emit('rooms', allRooms);
     });
 
-    socket.on('get-myrooms', async () => {
-        const allRooms = await getMyChannels(name);
-        socket.emit('rooms', allRooms);
-    });
-
-    socket.on('get-messages', async (room) => {
-        const allMessages = await getMessages(room);
-        socket.emit('messages', allMessages);
-    });
 
     // When a user disconnects
     socket.on('disconnect', () => { // When a user disconnects
@@ -295,6 +298,13 @@ io.on('connection', (socket) => { // When a user connects
     // When a msg is sent, broadcast it to all users
     socket.on('chat message', async (msg, userroom) => {
 
+        let newMessage = {
+            sender: name,
+            text: msg,
+            room: currentRoom,
+            to: null,
+        };
+
         if (userroom){
             currentRoom = userroom;
         }
@@ -308,87 +318,170 @@ io.on('connection', (socket) => { // When a user connects
                             console.error("Error executing query:", err.message);
                           }
                           const allNicknames = resultat.map(item => item.nickname).join(', ');
-                          socket.emit('chat message', "list of users : " + allNicknames);
+                        newMessage = {
+                            sender: "Server",
+                            text: "list of users : " + allNicknames,
+                            room: currentRoom,
+                            to: null,
+                        };
+                          socket.emit('chat message', newMessage);
                       })
                     break;
                 // Change name
                 case "/nick":
                     const newName = msg.split(" ")[1];
                     if (!newName) {
-                        socket.emit('chat message', "Please provide a valid nickname.");
+                        newMessage = {
+                            sender: "Server",
+                            text: "Please provide a valid nickname.",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                         break;
                     }
-                    
-                    connection.query("SELECT nickname FROM Users WHERE nickname = ? LIMIT 1", [newName], (err, results) => {
 
-                        if (results.length > 0) {
-                            socket.emit('chat message', `Nickname denied. ${newName} is already existant.`);
-                        } else {
-                            let userIndex = users.findIndex(user => user[1] === socket.id);
-                            let oldName = users[userIndex][0];
-                            users[userIndex][0] = newName;
-                            UpdateUser([newName, oldName]);
-                            name = newName;
-                            users = users.filter(item => item !== oldName);
-                            socket.emit('chat message', `Your name has been changed to ${newName}.`);
-                            io.emit('chat message', `${oldName} has changed their nickname to ${newName}.`);
-                        }
-                    });
-
+                    if (users.findIndex(user => user[0] === newName) !== -1) {
+                        newMessage = {
+                            sender: "Server",
+                            text: "Nickname denied. " + newName + " is already existent.",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
+                    } else {
+                        let userIndex = users.findIndex(user => user[1] === socket.id);
+                        let oldName = users[userIndex][0];
+                        users[userIndex][0] = newName;
+                        InsertUser([name, avatarID]);
+                       /*UpdateUser([newName, oldName]);*/
+                        name = newName;
+                        newMessage = {
+                            sender: "Server",
+                            text: "Your name has been changed to " + newName,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
+                        newMessage = {
+                            sender: "Server",
+                            text: oldName + " has changed their nickname to " + newName,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        io.emit('chat message', newMessage);
+                    }
                     break;
                 //create
                 case "/create":
                     let room = msg.split(" ")[1];
-                    InsertChannel([room]);
+                    let description = msg.split(" ").slice(2).join(" ");
+                    InsertChannel([room, description, 1]);
                     rooms.push(room);
                     socket.join(room);
-                    io.emit('chat message', "New room : " + room + " has been created by " + name);
+                    newMessage = {
+                        sender: "Server",
+                        text: "New room : " + room + " has been created by " + name,
+                        room: currentRoom,
+                        to: null,
+                    };
+                    io.emit('chat message', newMessage);
                     break;
                 //join
                 case "/join":
                     let roomToJoin = msg.split(" ")[1];
                     if (connectedRooms.includes(roomToJoin)){
-                        socket.emit('chat message', name + ": You are already connected to " + roomToJoin);
+                        newMessage = {
+                            sender: "Server",
+                            text: name + ": You are already connected to " + roomToJoin,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                         currentRoom = roomToJoin;
 
                     }else{
                         if (!rooms.includes(roomToJoin)) {
-                            socket.emit('chat message', name + ": Room not found");
+                            newMessage = {
+                                sender: "Server",
+                                text: ": Room not found",
+                                room: currentRoom,
+                                to: null,
+                            };
+                            socket.emit('chat message', newMessage);
                             break;
                         } else {
                             socket.join(roomToJoin);
                             connectedRooms.push(roomToJoin);
                             currentRoom = roomToJoin;
                             InsertPair([name,currentRoom])
-                            io.to(roomToJoin).emit('chat message', name + " joined the room");
+                            newMessage = {
+                                sender: "Server",
+                                text: name + " joined " + roomToJoin,
+                                room: currentRoom,
+                                to: null,
+                            };
+                            io.to(roomToJoin).emit('chat message', newMessage);
                         }
                     }
 
                     break;
                 //list rooms
                 case "/list":
-                    socket.emit('chat message', "list of rooms : " + rooms);
+                    const allRooms = await getChannels();
+                    const roomNames = allRooms.map(room => room.channelName).join(', ');
+                    newMessage = {
+                        sender: "Server",
+                        text: "list of rooms : " + roomNames,
+                        room: currentRoom,
+                        to: null,
+                    };
+                    socket.emit('chat message', newMessage);
                     break;
                 //delete room
                 case "/delete":
                     let roomToDelete = msg.split(" ")[1];
                     if (!rooms.includes(roomToDelete)) {
-                        socket.emit('chat message', name + ": Room not found");
+                        newMessage = {
+                            sender: "Server",
+                            text: "Room not found",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                         break;
                     } 
                     else if (roomToDelete == "General") {
-                        socket.emit(name + ": Can't delete the General channel");
+                        newMessage = {
+                            sender: "Server",
+                            text: name + ": Can't delete the General channel",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                     }else {
                         DeletechannelNamePair([roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
-                        io.emit('chat message', "Room : " + roomToDelete + " has been deleted by " + name);
+                        newMessage = {
+                            sender: "Server",
+                            text: "Room : " + roomToDelete + " has been deleted by " + name,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        io.emit('chat message', newMessage);
                         let socketsInRoom = await io.in(roomToDelete).fetchSockets();
                         socketsInRoom.forEach((socket) => {
                             socket.leave(roomToDelete);
                             socket.join("General");
                             currentRoom = "General";
                         });
-                        io.to("General").emit('chat message', 'Users from room ' +roomToDelete + ' have been moved to the General room.');
+                        newMessage = {
+                            sender: "Server",
+                            text: "Users from room " +roomToDelete + " have been moved to the General room.",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        io.to("General").emit('chat message', newMessage);
                         break;
                     }
                 //Private msg
@@ -397,20 +490,46 @@ io.on('connection', (socket) => { // When a user connects
                     let msgToUser = msg.split(" ").slice(2).join(" ");
 
                     if (!userToMsg || !msgToUser) {
-                        socket.emit('chat message', "Usage: /msg <username> <message>");
+                        newMessage = {
+                            sender: "Server",
+                            text: "Usage: /msg <username> <message>",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                         break;
                     }
 
                     //If no users
                     if ((users.findIndex(user => user[0] === userToMsg)) === -1){
-                        socket.emit('chat message', `User "${userToMsg}" not found.`);
+                        newMessage = {
+                            sender: "Server",
+                            text: "User " + userToMsg + " not found.",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                         break;
                     }
 
                     let targetSocketId = users[(users.findIndex(user => user[0] === userToMsg))][1];
 
-                    io.to(targetSocketId).emit('chat message', `From ${name} (private): ${msgToUser}`);
-                    socket.emit('chat message', `To ${userToMsg} (private): ${msgToUser}`);
+                    newMessage = {
+                        sender: "Server",
+                        text: "From " + name + "(private): " + msgToUser,
+                        room: currentRoom,
+                        to: null,
+                    };
+
+                    io.to(targetSocketId).emit('chat message', newMessage);
+
+                    newMessage = {
+                        sender: "Server",
+                        text: "To " + name + "(private): " + msgToUser,
+                        room: currentRoom,
+                        to: null,
+                    };
+                    socket.emit('chat message', newMessage);
                     InsertPrivateMessage([name,userToMsg,getCurrentDatetime(),msgToUser]);
                     break;
                 //Quit room
@@ -426,9 +545,21 @@ io.on('connection', (socket) => { // When a user connects
                         currentRoom = "General";
                         let roomIndex = connectedRooms.indexOf(roomToQuit);
                         connectedRooms.splice(roomindex, 1);
-                        socket.emit('chat message', "You have left the room " + roomToQuit);
+                        newMessage = {
+                            sender: "Server",
+                            text: name + "have left the room " + roomToQuit,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                     }else{
-                        socket.emit('chat message', "You are not connected to this room");
+                        newMessage = {
+                            sender: "Server",
+                            text: "You are not connected to this room",
+                            room: currentRoom,
+                            to: null,
+                        };
+                        socket.emit('chat message', newMessage);
                     }
 
                     break;
@@ -441,21 +572,49 @@ io.on('connection', (socket) => { // When a user connects
                             }
                         });
                         const data = await response.text();
-                        io.to(currentRoom).emit('chat message', name + " ask for a Dad joke: " + data);
+
+                        newMessage = {
+                            sender: "DadJoke",
+                            text: name + " ask for a Dad joke: " + data,
+                            room: currentRoom,
+                            to: null,
+                        };
+                        io.to(currentRoom).emit('chat message', newMessage);
                     } catch (error) {
                         console.log({ error: 'Error fetching API data' });
                     }
                     break;
                 //List all rooms connected
                 case "/rooms":
-                    socket.emit('chat message', "list of rooms : " + connectedRooms);
+                    const allMyRooms = await getMyChannels(name);
+                    const MyroomNames = allMyRooms.map(room => room.channelName).join(', ');
+                    newMessage = {
+                        sender: "Server",
+                        text: "list of rooms : " + MyroomNames,
+                        room: currentRoom,
+                        to: null,
+                    };
+                    socket.emit('chat message', newMessage);
                     break;
                 default:
-                    socket.emit('chat message', name + ": Command not found");
+                    newMessage = {
+                        sender: "Server",
+                        text: "Command not found",
+                        room: currentRoom,
+                        to: null,
+                    };
+                    socket.emit('chat message', newMessage);
                     break;
             }
         } else {
-            io.to(currentRoom).emit('chat message', name + ": " + msg);
+            newMessage = {
+                sender: name,
+                text: msg,
+                room: currentRoom,
+                to: null,
+            };
+
+            io.to(currentRoom).emit('chat message', newMessage);
             InsertMessage([name,currentRoom,getCurrentDatetime(),msg]);
         }
 
