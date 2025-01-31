@@ -82,8 +82,8 @@ async function UpdateUser(valeur) {
     });
 }
 
-async function InsertChannel(valeur) {
-    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", valeur, (err, result) => {
+async function InsertChannel(cName, cDescription) {
+    connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", cName, cDescription, (err, result) => {
         if (err) {
             console.error('Error inserting data:', err);
         }
