@@ -227,7 +227,7 @@ let rooms = ["General"];
 io.on('connection', (socket) => { // When a user connects
     let currentRoom
     //User is connected to connectedRooms
-    let connectedRooms = [currentRoom];
+    let connectedRooms = [];
     //currentRoom is the room where the user is writing a message
     let name;
     let avatarID
@@ -244,6 +244,7 @@ io.on('connection', (socket) => { // When a user connects
     socket.on('join-room', async (room) => {
         currentRoom = room;
         socket.join(currentRoom); // Join default room
+        connectedRooms.push(currentRoom);
         InsertPair([name, currentRoom]);
         if (!name) {
             console.log("Warning: Name is undefined in join-room handler");
@@ -548,14 +549,14 @@ io.on('connection', (socket) => { // When a user connects
                     //arg
                     let roomToQuit = msg.split(" ")[1];
                     //Check if user is connected to the room
-                    if (roomToQuit in connectedRooms){
+                    if (connectedRooms.includes(roomToQuit)) {
                         //leave room, join default room, remove from connectedRooms
                         socket.leave(roomToQuit);
                         DeletePair([name, roomToQuit]);
                         socket.join("General");
                         currentRoom = "General";
                         let roomIndex = connectedRooms.indexOf(roomToQuit);
-                        connectedRooms.splice(roomindex, 1);
+                        connectedRooms.splice(roomIndex, 1);
                         newMessage = {
                             sender: "Server",
                             text: name + "have left the room " + roomToQuit,
@@ -570,6 +571,8 @@ io.on('connection', (socket) => { // When a user connects
                             room: currentRoom,
                             to: null,
                         };
+                        const allRooms = await getMyChannels(name);
+                        socket.emit('rooms', allRooms);
                         socket.emit('chat message', newMessage);
                     }
 
