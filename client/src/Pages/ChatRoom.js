@@ -56,6 +56,7 @@ function ChatRoom({ nickname }) {
 
     const handleRoomChange = (room) => {
         setCurrentRoom(room);
+        socket.emit('change-room', room);
     };
 
     const handleLeaveRoom = () => {

@@ -267,6 +267,15 @@ io.on('connection', (socket) => { // When a user connects
         UpdateChannel([0,rName]);
     });
 
+    socket.on('change-room', async (room) => {
+        currentRoom = room;
+        socket.join(currentRoom);
+        const allNicknames = await getPair(room);
+        io.to(currentRoom).emit('users', allNicknames);
+
+        const allMessages = await getMessages(room);
+        socket.emit('messages', allMessages);
+    });
 
 
     socket.on('get-rooms', async () => {
