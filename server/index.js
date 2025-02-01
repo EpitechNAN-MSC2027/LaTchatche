@@ -362,8 +362,7 @@ io.on('connection', (socket) => { // When a user connects
                         let userIndex = users.findIndex(user => user[1] === socket.id);
                         let oldName = users[userIndex][0];
                         users[userIndex][0] = newName;
-                        InsertUser([name, avatarID]);
-                       /*UpdateUser([newName, oldName]);*/
+                        UpdateUser([newName, oldName]);
                         name = newName;
                         newMessage = {
                             sender: "Server",
@@ -379,6 +378,8 @@ io.on('connection', (socket) => { // When a user connects
                             to: null,
                         };
                         io.emit('chat message', newMessage);
+                        const allNicknames = await getPair(currentRoom);
+                        io.to(currentRoom).emit('users', allNicknames);
                     }
                     break;
                 //create
@@ -470,6 +471,7 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit('chat message', newMessage);
                     }else {
                         DeletechannelNamePair([roomToDelete]);
+                        UpdateChannel([0,roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
                         newMessage = {
                             sender: "Server",
@@ -534,7 +536,7 @@ io.on('connection', (socket) => { // When a user connects
 
                     newMessage = {
                         sender: "Server",
-                        text: "To " + name + "(private): " + msgToUser,
+                        text: "To " + userToMsg + "(private): " + msgToUser,
                         room: currentRoom,
                         to: null,
                     };
