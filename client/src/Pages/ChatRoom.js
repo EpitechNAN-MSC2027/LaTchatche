@@ -52,6 +52,7 @@ function ChatRoom({ nickname }) {
 
     const handleSendMessage = () => {
         socket.emit('chat message',currentMessage, currentRoom);
+        setCurrentMessage("");
     };
 
     const handleRoomChange = (room) => {
