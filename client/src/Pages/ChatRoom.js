@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatRoom.css";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -14,6 +14,9 @@ function ChatRoom({ nickname }) {
     const [users, setUsers] = useState([]);
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
+
+    // Scroll to bottom when new message is received
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
 
@@ -37,6 +40,11 @@ function ChatRoom({ nickname }) {
         };
     }, [socket]);
 
+    //Scroll to bottom when new message is received
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
+
     socket.on('users', (users) => {
         setUsers(users);
     });
@@ -52,10 +60,12 @@ function ChatRoom({ nickname }) {
 
     const handleSendMessage = () => {
         socket.emit('chat message',currentMessage, currentRoom);
+        setCurrentMessage("");
     };
 
     const handleRoomChange = (room) => {
         setCurrentRoom(room);
+        socket.emit('change-room', room);
     };
 
     const handleLeaveRoom = () => {
@@ -131,12 +141,22 @@ function ChatRoom({ nickname }) {
                     </div>
                 </header>
                 <div className="chat-messages">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}>
-                            {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
-                            <p>{msg.text}</p>
-                        </div>
-                    ))}
+                    {messages.map((msg, index) =>
+                        msg.sender === "Server" ? (
+                            <div key={index} className="chat-message server-message">
+                                <p>ℹ️ {msg.text}</p>
+                            </div>
+                        ) : (
+                            <div
+                                key={index}
+                                className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}
+                            >
+                                {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
+                                <p>{msg.sender} : {msg.text}</p>
+                            </div>
+                        )
+                    )}
+                    <div ref={messagesEndRef}/>
                 </div>
                 {currentRoom && (
                     <div className="chat-input">

@@ -1,54 +1,65 @@
-const express = require('express');
-const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const { Server } = require("socket.io");
+const express = require('express'); // Import Express framework
+const app = express(); // Create an Express application
+const http = require('http'); // Import Node.js HTTP module
+const server = http.createServer(app); // Create an HTTP server using the Express app
+const { Server } = require("socket.io"); // Import Socket.IO server
 
-//Import dotenv & load .env
+// Import dotenv & load .env file
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config(); // Load environment variables from .env file
+
+// Create a new Socket.IO server with CORS configuration
 const io = new Server(server, {
     cors: {
-        origin: [ process.env.IP, "http://localhost:3000"],
-        methods: ["GET", "POST"],
+        origin: [process.env.IP, "http://localhost:3000"], // Allowed origins for CORS
+        methods: ["GET", "POST"], // Allowed HTTP methods for CORS
     },
 });
-const mysql = require('mysql2');
-const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types');
 
-//Mysql connection
+const mysql = require('mysql2'); // Import MySQL2 module
+const { DATETIME, NULL } = require('mysql/lib/protocol/constants/types'); // Import MySQL constants
+
+// MySQL connection configuration
 const connection = mysql.createConnection({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  port: process.env.DB_PORT,
-    maxIdle: 999999,
-    idleTimeout: 999999,
-    enableKeepAlive: true,
-    connectTimeout: 99999,
+    host: process.env.DB_HOST, // Database host
+    user: process.env.DB_USER, // Database user
+    password: process.env.DB_PASSWORD, // Database password
+    database: process.env.DB_NAME, // Database name
+    port: process.env.DB_PORT, // Database port
+    maxIdle: 999999, // Maximum idle connections
+    idleTimeout: 999999, // Idle timeout duration
+    enableKeepAlive: true, // Enable keep-alive
+    connectTimeout: 99999, // Connection timeout duration
 });
 
+// Establish a connection to the MySQL database
 connection.connect((err) => {
-  if (err) {
-    console.error('Error connecting to MySQL:', err.stack);
-    return;
-  }
-  console.log('Connected to MySQL!');
+    if (err) {
+        console.error('Error connecting to MySQL:', err.stack); // Log error if connection fails
+        return;
+    }
+    console.log('Connected to MySQL!'); // Log success message if connection is successful
 });
 
+// Export the connection object for use in other parts of the application
 module.exports = connection;
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
-
+/**
+ * Returns the current date and time formatted as 'YYYY-MM-DD HH:MM:SS'.
+ *
+ * @returns {string} The formatted current date and time.
+ */
 function getCurrentDatetime() {
     const now = new Date();
     const formattedDate = now.toISOString().slice(0, 19).replace('T', ' ');
     return formattedDate;
   }
 
+/**
+ * Inserts a new message into the Messages table.
+ *
+ * @param {Array} valeur - An array containing the values to be inserted [nickname, channelName, dateMessage, texteMessage].
+ */
 async function InsertMessage(valeur) {
     connection.query("INSERT INTO Messages (nickname,channelName,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
         if (err) {
@@ -58,6 +69,11 @@ async function InsertMessage(valeur) {
     });
 }
 
+/**
+ * Inserts a new private message into the PrivateMessages table.
+ *
+ * @param {Array} valeur - An array containing the values to be inserted [nickname, privateReceiver, dateMessage, texteMessage].
+ */
 async function InsertPrivateMessage(valeur) {
     connection.query("INSERT INTO PrivateMessages (nickname,privateReceiver,dateMessage,texteMessage) VALUES (?, ?, ?, ?)", valeur, (err, result) => {
         if (err) {
@@ -67,6 +83,11 @@ async function InsertPrivateMessage(valeur) {
     });
 }
 
+/**
+ * Inserts a new user into the Users table.
+ *
+ * @param {Array} valeur - An array containing the values to be inserted [nickname, iconID].
+ */
 async function InsertUser(valeur) {
     connection.query("INSERT IGNORE INTO Users (nickname, iconID) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
@@ -77,6 +98,11 @@ async function InsertUser(valeur) {
     });
 }
 
+/**
+ * Updates the nickname of a user in the Users table.
+ *
+ * @param {Array} valeur - An array containing the values to be updated [newNickname, oldNickname].
+ */
 async function UpdateUser(valeur) {
     connection.query("UPDATE Users SET nickname = ? WHERE nickname = ?", valeur, (err, result) => {
         if (err) {
@@ -86,6 +112,11 @@ async function UpdateUser(valeur) {
     });
 }
 
+/**
+ * Inserts a new channel into the Channels table.
+ *
+ * @param {Array} valeur - An array containing the values to be inserted [channelName, channelDescription].
+ */
 async function InsertChannel([cName, cDescription]) {
     connection.query("INSERT IGNORE INTO Channels (channelName, channelDescription, isAlive) VALUES (?, ?, 1)", [cName, cDescription], (err, result) => {
         if (err) {
@@ -96,6 +127,11 @@ async function InsertChannel([cName, cDescription]) {
     });
 }
 
+/**
+ * Inserts a new pair into the Pairs table.
+ *
+ * @param {Array} valeur - An array containing the values to be inserted [nickname, channelName].
+ */
 async function InsertPair(valeur) {
     connection.query("INSERT IGNORE INTO Pairs (nickname, channelName) VALUES (?, ?)", valeur, (err, result) => {
         if (err) {
@@ -106,6 +142,11 @@ async function InsertPair(valeur) {
     });
 }
 
+/**
+ * Deletes a pair from the Pairs table.
+ *
+ * @param {Array} valeur - An array containing the values to be deleted [nickname, channelName].
+ */
 async function DeletePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (nickname = ? AND channelName = ?)", valeur, (err, result) => {
         if (err) {
@@ -115,6 +156,11 @@ async function DeletePair(valeur) {
     });
 }
 
+/**
+ * Deletes a pair from the Pairs table based on the nickname.
+ *
+ * @param {Array} valeur - An array containing the nickname to be deleted.
+ */
 async function DeletenicknamePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (nickname = ?)", valeur, (err, result) => {
         if (err) {
@@ -124,6 +170,9 @@ async function DeletenicknamePair(valeur) {
     });
 }
 
+/**
+ * Deletes all pairs from the Pairs table.
+ */
 async function DeleteEveryPair() {
     connection.query("DELETE FROM Pairs", (err, result) => {
         if (err) {
@@ -133,6 +182,11 @@ async function DeleteEveryPair() {
     });
 }
 
+/**
+ * Deletes pairs from the Pairs table based on the channelName.
+ *
+ * @param {Array} valeur - An array containing the channelName to be deleted.
+ */
 async function DeletechannelNamePair(valeur) {
     connection.query("DELETE FROM Pairs WHERE (channelName = ?)", valeur, (err, result) => {
         if (err) {
@@ -142,6 +196,12 @@ async function DeletechannelNamePair(valeur) {
     });
 }
 
+/**
+ * Retrieves all nicknames from the Pairs table for a given channel.
+ *
+ * @param {string} channel - The name of the channel.
+ * @returns {Promise<Array<string>>} A promise that resolves with an array of nicknames.
+ */
 async function getPair(channel) {
     return new Promise((resolve, reject) => {
         connection.query("SELECT nickname FROM Pairs WHERE channelName = ?", [channel], (err, resultat) => {
@@ -156,6 +216,11 @@ async function getPair(channel) {
     });
 }
 
+/**
+ * Retrieves all channels from the Channels table where isAlive is 1.
+ *
+ * @returns {Promise<Array<{channelName: string, channelDescription: string}>>} A promise that resolves with an array of channel objects.
+ */
 async function getChannels() {
     return new Promise((resolve, reject) => {
         connection.query("SELECT channelName, channelDescription FROM Channels WHERE isAlive = 1", (err, resultat) => {
@@ -173,6 +238,12 @@ async function getChannels() {
     });
 }
 
+/**
+ * Retrieves all channels from the Channels table where isAlive is 1 and the nickname matches.
+ *
+ * @param {string} nickname - The nickname of the user.
+ * @returns {Promise<Array<{channelName: string, channelDescription: string}>>} A promise that resolves with an array of channel objects.
+ */
 async function getMyChannels(nickname) {
     return new Promise((resolve, reject) => {
         connection.query("SELECT Channels.channelName, Channels.channelDescription FROM Channels JOIN Pairs ON Channels.channelName = Pairs.channelName WHERE Channels.isAlive = 1 AND Pairs.nickname = ?", [nickname], (err, resultat) => {
@@ -190,6 +261,12 @@ async function getMyChannels(nickname) {
     });
 }
 
+/**
+ * Retrieves all messages from the Messages table for a given channel.
+ *
+ * @param {string} room - The name of the channel.
+ * @returns {Promise<Array<{text: string, sender: string}>>} A promise that resolves with an array of message objects.
+ */
 async function getMessages(room) {
     return new Promise((resolve, reject) => {
         connection.query("SELECT texteMessage, nickname FROM Messages WHERE channelName = ?", [room], (err, resultat) => {
@@ -207,6 +284,11 @@ async function getMessages(room) {
     });
 }
 
+/**
+ * Updates the isAlive status of a channel in the Channels table.
+ *
+ * @param {Array} valeur - An array containing the values to be updated [isAlive, channelName].
+ */
 async function UpdateChannel(valeur) {
     connection.query("UPDATE Channels SET isAlive = ? WHERE channelName = ?", valeur, (err, result) => {
         if (err) {
@@ -217,69 +299,95 @@ async function UpdateChannel(valeur) {
     });
 }
 
-//X for nameX
-let x = 1;
 //List of all users
 let users = [];
 //List of all rooms
 let rooms = ["General"];
 
 io.on('connection', (socket) => { // When a user connects
+    //currentRoom is the room where the user is writing a message
     let currentRoom
     //User is connected to connectedRooms
-    let connectedRooms = [currentRoom];
-    //currentRoom is the room where the user is writing a message
+    let connectedRooms = [];
+    //Name of the user
     let name;
+    //Avatar of the user
     let avatarID
 
+    // Handle user login event
     socket.on('login', (nickname) => {
-        name = nickname;
-        users.push([name, socket.id]);
-    });
-    socket.on('avatar', (avatar) => {
-        avatarID = avatar;
-        InsertUser([name, avatar]);
+        name = nickname; // Set the user's nickname
+        users.push([name, socket.id]); // Add the user to the list of connected users
     });
 
+    //Handle user avatar event
+    socket.on('avatar', (avatar) => {
+        avatarID = avatar; // Set the user's avatar
+        InsertUser([name, avatar]); // Insert the user into the Users table
+    });
+
+    // Handle user join-room event
     socket.on('join-room', async (room) => {
-        currentRoom = room;
+        currentRoom = room; // Set the current room
         socket.join(currentRoom); // Join default room
-        InsertPair([name, currentRoom]);
+        connectedRooms.push(currentRoom); // Add the room to the list of connected rooms
+        InsertPair([name, currentRoom]); // Insert the user into the Pairs table
+        // Handle name not defined
         if (!name) {
             console.log("Warning: Name is undefined in join-room handler");
         }
+
+        //Emit all users in the room
         const allNicknames = await getPair(room);
         io.to(currentRoom).emit('users', allNicknames);
 
+        //Emit All room of the user
         const allRooms = await getMyChannels(name);
         socket.emit('rooms', allRooms);
 
+        //Emit all messages in the room
         const allMessages = await getMessages(room);
         socket.emit('messages', allMessages);
     });
 
+    //Handle create-room event
     socket.on('create-room', (rName, rDescription ) => {
-        InsertChannel([rName, rDescription, 1]);
+        InsertChannel([rName, rDescription, 1]); // Insert the channel into the Channels table
     });
 
+    //Handle delete-room event
     socket.on('delete-room', (rName) => {
-        DeletechannelNamePair([rName]);
-        UpdateChannel([0,rName]);
+        DeletechannelNamePair([rName]); // Delete the channel from the Pairs table
+        UpdateChannel([0,rName]); // Update the channel in the Channels table
     });
 
+    //Handle change-room event
+    socket.on('change-room', async (room) => {
+        currentRoom = room; // Set the current room
+        socket.join(currentRoom); // Join the new room
 
+        // Emit all users in the room
+        const allNicknames = await getPair(room);
+        io.to(currentRoom).emit('users', allNicknames);
 
+        //Emit all messages in the room
+        const allMessages = await getMessages(room);
+        socket.emit('messages', allMessages);
+    });
+
+    //Handle get-rooms event
     socket.on('get-rooms', async () => {
+        //Emit all rooms
         const allRooms = await getChannels();
         socket.emit('rooms', allRooms);
     });
 
 
-    // When a user disconnects
-    socket.on('disconnect', () => { // When a user disconnects
-        users = users.filter(item => item !== name);
-
-        DeletenicknamePair([name]);
+    // Handle user disconnect event
+    socket.on('disconnect', () => {
+        users = users.filter(item => item !== name);// Remove the user from the list of connected users
+        DeletenicknamePair([name]);// Delete the user from the Pairs table
+        //Emit all users in the room
         connectedRooms.forEach(room => {
             io.to(room).emit('chat message', `${name} left the room.`);
         })
@@ -288,26 +396,27 @@ io.on('connection', (socket) => { // When a user connects
     //Lists of all commands
     const commandlist = ['/users', '/join', '/nick', '/quit', '/list', '/dadjoke', '/delete', '/create', '/msg', '/rooms'];
 
-    // autocomplete requests
+    // Handle autocomplete request event
     socket.on("autocomplete_request", (data) => {
         const { inputText } = data;
         const suggestions = commandlist.filter(cmd => cmd.startsWith(inputText));
         socket.emit("autocomplete_response", { suggestions });
     });
 
-    // When a msg is sent, broadcast it to all users
+    // Handle chat message event
     socket.on('chat message', async (msg, userroom) => {
-
+        // Create a new message object
         let newMessage = {
             sender: name,
             text: msg,
             room: currentRoom,
             to: null,
         };
-
+        //If userroom is defined, defined the currentRoom
         if (userroom){
             currentRoom = userroom;
         }
+        //If the message starts with a slash, it's a command
         if (msg.startsWith("/")) {
             let cmd = msg.split(" ")[0];
             switch (cmd) {
@@ -353,8 +462,7 @@ io.on('connection', (socket) => { // When a user connects
                         let userIndex = users.findIndex(user => user[1] === socket.id);
                         let oldName = users[userIndex][0];
                         users[userIndex][0] = newName;
-                        InsertUser([name, avatarID]);
-                       /*UpdateUser([newName, oldName]);*/
+                        UpdateUser([newName, oldName]);
                         name = newName;
                         newMessage = {
                             sender: "Server",
@@ -370,6 +478,8 @@ io.on('connection', (socket) => { // When a user connects
                             to: null,
                         };
                         io.emit('chat message', newMessage);
+                        const allNicknames = await getPair(currentRoom);
+                        io.to(currentRoom).emit('users', allNicknames);
                     }
                     break;
                 //create
@@ -461,6 +571,7 @@ io.on('connection', (socket) => { // When a user connects
                         socket.emit('chat message', newMessage);
                     }else {
                         DeletechannelNamePair([roomToDelete]);
+                        UpdateChannel([0,roomToDelete]);
                         rooms = rooms.filter(item => item !== roomToDelete);
                         newMessage = {
                             sender: "Server",
@@ -515,7 +626,7 @@ io.on('connection', (socket) => { // When a user connects
                     let targetSocketId = users[(users.findIndex(user => user[0] === userToMsg))][1];
 
                     newMessage = {
-                        sender: "Server",
+                        sender: name,
                         text: "From " + name + "(private): " + msgToUser,
                         room: currentRoom,
                         to: null,
@@ -524,8 +635,8 @@ io.on('connection', (socket) => { // When a user connects
                     io.to(targetSocketId).emit('chat message', newMessage);
 
                     newMessage = {
-                        sender: "Server",
-                        text: "To " + name + "(private): " + msgToUser,
+                        sender: name,
+                        text: "To " + userToMsg + "(private): " + msgToUser,
                         room: currentRoom,
                         to: null,
                     };
@@ -537,14 +648,14 @@ io.on('connection', (socket) => { // When a user connects
                     //arg
                     let roomToQuit = msg.split(" ")[1];
                     //Check if user is connected to the room
-                    if (roomToQuit in connectedRooms){
+                    if (connectedRooms.includes(roomToQuit)) {
                         //leave room, join default room, remove from connectedRooms
                         socket.leave(roomToQuit);
                         DeletePair([name, roomToQuit]);
                         socket.join("General");
                         currentRoom = "General";
                         let roomIndex = connectedRooms.indexOf(roomToQuit);
-                        connectedRooms.splice(roomindex, 1);
+                        connectedRooms.splice(roomIndex, 1);
                         newMessage = {
                             sender: "Server",
                             text: name + "have left the room " + roomToQuit,
@@ -559,6 +670,8 @@ io.on('connection', (socket) => { // When a user connects
                             room: currentRoom,
                             to: null,
                         };
+                        const allRooms = await getMyChannels(name);
+                        socket.emit('rooms', allRooms);
                         socket.emit('chat message', newMessage);
                     }
 
@@ -596,6 +709,7 @@ io.on('connection', (socket) => { // When a user connects
                     };
                     socket.emit('chat message', newMessage);
                     break;
+                //Default command found
                 default:
                     newMessage = {
                         sender: "Server",
@@ -613,7 +727,7 @@ io.on('connection', (socket) => { // When a user connects
                 room: currentRoom,
                 to: null,
             };
-
+            //Emit the message to the room and InsertMessage in the database
             io.to(currentRoom).emit('chat message', newMessage);
             InsertMessage([name,currentRoom,getCurrentDatetime(),msg]);
         }
@@ -622,8 +736,8 @@ io.on('connection', (socket) => { // When a user connects
 });
 
 
-
+// Start the server on port 5000
 server.listen(5000, () => {
     console.log('listening on *:5000');
-    DeleteEveryPair();
+    DeleteEveryPair(); //Delete all pairs
 });
