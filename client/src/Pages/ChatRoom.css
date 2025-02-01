@@ -7,6 +7,17 @@
     background: linear-gradient(to right, #f5a623, #c85103);
 }
 
+.chat-message.server-message {
+    color: red;
+    font-style: italic;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 100%;
+    font-size: medium;
+}
+
 .chat-sidebar-left,
 .chat-sidebar-right {
     padding: 20px;

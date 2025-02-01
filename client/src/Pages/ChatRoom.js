@@ -132,12 +132,21 @@ function ChatRoom({ nickname }) {
                     </div>
                 </header>
                 <div className="chat-messages">
-                    {messages.map((msg, index) => (
-                        <div key={index} className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}>
-                            {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
-                            <p>{msg.text}</p>
-                        </div>
-                    ))}
+                    {messages.map((msg, index) =>
+                        msg.sender === "Server" ? (
+                            <div key={index} className="chat-message server-message">
+                                <p>ℹ️ {msg.text}</p>
+                            </div>
+                        ) : (
+                            <div
+                                key={index}
+                                className={`chat-message ${msg.sender === nickname ? "sent" : "received"}`}
+                            >
+                                {msg.to && <p className="chat-private-tag">[Private to {msg.to}]</p>}
+                                <p>{msg.sender} : {msg.text}</p>
+                            </div>
+                        )
+                    )}
                 </div>
                 {currentRoom && (
                     <div className="chat-input">
