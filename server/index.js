@@ -39,9 +39,6 @@ connection.connect((err) => {
 
 module.exports = connection;
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/index.html');
-});
 
 function getCurrentDatetime() {
     const now = new Date();
