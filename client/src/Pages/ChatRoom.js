@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import "./ChatRoom.css";
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -14,6 +14,9 @@ function ChatRoom({ nickname }) {
     const [users, setUsers] = useState([]);
     const [currentRoom, setCurrentRoom] = useState("General");
     const [currentMessage, setCurrentMessage] = useState("");
+
+    // Scroll to bottom when new message is received
+    const messagesEndRef = useRef(null);
 
     useEffect(() => {
 
@@ -36,6 +39,11 @@ function ChatRoom({ nickname }) {
             socket.off('messages');
         };
     }, [socket]);
+
+    //Scroll to bottom when new message is received
+    useEffect(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages]);
 
     socket.on('users', (users) => {
         setUsers(users);
@@ -148,6 +156,7 @@ function ChatRoom({ nickname }) {
                             </div>
                         )
                     )}
+                    <div ref={messagesEndRef}/>
                 </div>
                 {currentRoom && (
                     <div className="chat-input">
