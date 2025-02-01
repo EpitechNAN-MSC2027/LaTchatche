@@ -626,7 +626,7 @@ io.on('connection', (socket) => { // When a user connects
                     let targetSocketId = users[(users.findIndex(user => user[0] === userToMsg))][1];
 
                     newMessage = {
-                        sender: "Server",
+                        sender: name,
                         text: "From " + name + "(private): " + msgToUser,
                         room: currentRoom,
                         to: null,
@@ -635,7 +635,7 @@ io.on('connection', (socket) => { // When a user connects
                     io.to(targetSocketId).emit('chat message', newMessage);
 
                     newMessage = {
-                        sender: "Server",
+                        sender: name,
                         text: "To " + userToMsg + "(private): " + msgToUser,
                         room: currentRoom,
                         to: null,
