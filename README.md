@@ -29,7 +29,7 @@ message: send a message to all the users on the channel
 ## Installation
 
 1. Make sure you have Node.js and npm installed on your machine. If not, download them from nodejs.org.
-2. Clone the repository: `git clone  https://github.com/yourusername/LaTchatche.git`
+2. Clone the repository: `git clone git@github.com:EpitechNAN-MSC2027/LaTchatche.git`
 3. Navigate to the project: `cd LaTchatche`
 4. Configure the Backend:
    - Install server dependencies:
